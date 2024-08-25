@@ -47,6 +47,19 @@ function AddUser() {
           />
         </div>
         <div className="form-group mb-3">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+             className="form-control"
+            name="email"
+            value={userData.email}
+            onChange={handleChange}
+            placeholder="Enter Email"
+            required
+          />
+        </div>
+
+        <div className="form-group mb-3">
           <label htmlFor="password">Password</label>
           <input
             type="password"

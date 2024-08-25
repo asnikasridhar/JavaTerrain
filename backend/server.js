@@ -23,9 +23,9 @@ db.connect(err => {
 //***************************USER***************************************** */
 // Route to add a new user
 app.post('/add-user', (req, res) => {
-  const { username, password, role, is_active } = req.body;
-  const query = 'INSERT INTO users (username, password, role, is_active) VALUES (?, ?, ?, ?)';
-  db.query(query, [username, password, role, is_active], (err, result) => {
+  const { username, password, role, is_active, email } = req.body;
+  const query = 'INSERT INTO users (username, password, role, is_active, email) VALUES (?, ?, ?, ?,?)';
+  db.query(query, [username, password, role, is_active, email], (err, result) => {
     if (err) return res.status(500).send('Error adding user.');
     res.send('User added successfully');
   });
@@ -43,6 +43,69 @@ app.get('/users', (req, res) => {
     res.json(results);
   });
 });
+
+// Endpoint to get user details by user_id
+app.get('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM users WHERE user_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error retrieving user details by ID:', err);
+      return res.status(500).json({ error: 'Failed to retrieve user details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(results[0]);
+  });
+});
+
+// Endpoint to update user details by user_id
+app.put('/users/:id', (req, res) => {
+  console.log(req.body);
+  const { id } = req.params;
+  const { username, password, role, is_active, email } = req.body;
+
+  const query = `
+    UPDATE users 
+    SET username = ?, password = ?, role = ?, is_active = ?, email = ?
+    WHERE user_id = ?
+  `;
+
+  db.query(query, [username, password, role, is_active,email, id], (err, results) => {
+    if (err) {
+      console.error('Error updating user details:', err);
+      return res.status(500).json({ error: 'Failed to update user details' });
+    }
+    
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User details updated successfully' });
+  });
+});
+
+
+
+// Endpoint to delete user by user_id
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM users WHERE user_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error deleting user by ID:', err);
+      return res.status(500).json({ error: 'Failed to delete user' });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.send('User deleted successfully');
+  });
+});
+
 
 //*****************************ACRE********************* */
 // Route to add a new acre
@@ -66,6 +129,49 @@ app.get('/acredetails', (req, res) => {
     res.json(results);
   });
 });
+
+app.get('/acredetails/:id', (req, res) => {
+  const { id } = req.params; // Get the acre ID from the request parameters
+  const query = 'SELECT acre_id, location, acre_size, plant_type, terrain, water_availability FROM acres WHERE acre_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error fetching acre details:', err.stack);
+      return res.status(500).json({ error: 'Failed to retrieve acre details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Acre not found' });
+    }
+    res.json(results[0]); // Return the acre details as a JSON object
+  });
+});
+
+// Route to update an existing acre
+app.put('/update-acre/:id', (req, res) => {
+  const { id } = req.params;
+  const { user_id, acre_size, plant_type, terrain, location, water_availability } = req.body;
+  const query = `
+    UPDATE Acres 
+    SET user_id = ?, acre_size = ?, plant_type = ?, terrain = ?, location = ?, water_availability = ?
+    WHERE acre_id = ?
+  `;
+  db.query(query, [user_id, acre_size, plant_type, terrain, location, water_availability, id], (err, result) => {
+    if (err) return res.status(500).send('Error updating acre.');
+    res.send('Acre updated successfully');
+  });
+});
+
+// Route to delete an existing acre
+app.delete('/delete-acre/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM Acres WHERE acre_id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) return res.status(500).send('Error deleting acre.');
+    res.send('Acre deleted successfully');
+  });
+});
+
+
 
 //***********************************LABOR************************** */
 // Route to add a new labor

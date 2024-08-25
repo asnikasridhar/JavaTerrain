@@ -23,6 +23,8 @@ import ViewFertilizerDetails from './ViewFertilizerDetails';
 import ViewExpenditureDetails from './ViewExpenditureDetails';
 import ViewRainDetails from './ViewRainDetails';
 import ViewReportDetails from './ViewReportDetails';
+import EditAcre from './EditAcre';
+import EditUser from './EditUser';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -76,12 +78,14 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/add-acre" element={<AddAcre />} />
             <Route path="/view-acredetails" element={<ViewAcreDetails />} />
+            <Route path="/edit-acre/:id" element={<EditAcre />} />
 
             <Route path="/add-labor" element={<AddLabor />} />
             <Route path="/view-labordetails" element={<ViewLaborDetails />} />
 
             <Route path="/add-user" element={<AddUser />} />
             <Route path="/view-userdetails" element={<ViewUserDetails />} />
+            <Route path="/edit-user/:id" element={<EditUser />} />
 
             <Route path='/add-plantdetails' element={<AddPlantDetails />} />
             <Route path='/view-plantdetails' element={<ViewPlantDetails />} />
@@ -100,6 +104,8 @@ function App() {
 
             <Route path='/add-reports' element={<AddReport />} />
             <Route path='/view-reportdetails' element={<ViewReportDetails />} />
+
+
 
             {/* Redirect all unknown routes to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
