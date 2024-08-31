@@ -304,9 +304,9 @@ app.post('/add-rain', (req, res) => {
   });
 });
 
+// Route to get all rain details
 app.get('/raindetails', (req, res) => {
-  const query = 'SELECT * FROM raindetails';
-
+  const query = 'SELECT * FROM RainDetails';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching rain details:', err);
@@ -317,44 +317,47 @@ app.get('/raindetails', (req, res) => {
   });
 });
 
-
-app.put('/raindetails/:id', (req, res) => {
-  const { id } = req.params;
-  const { acre_id, date_time, rain_amount } = req.body;
-
-  const query = `UPDATE raindetails 
-                 SET acre_id = ?, date_time = ?, rain_amount = ? 
-                 WHERE rain_id = ?`;
-
-  db.query(query, [acre_id, date_time, rain_amount, id], (err, result) => {
+// Route to get a specific rain detail by rain_id
+app.get('/raindetails/:id', (req, res) => {
+  const rain_id = parseInt(req.params.id, 10);
+  const query = 'SELECT * FROM RainDetails WHERE rain_id = ?';
+  db.query(query, [rain_id], (err, result) => {
     if (err) {
-      console.error('Error updating rain details:', err);
-      res.status(500).send('Error updating rain details.');
-    } else if (result.affectedRows === 0) {
+      console.error('Error fetching rain detail:', err);
+      res.status(500).send('Error fetching rain detail.');
+    } else if (result.length === 0) {
       res.status(404).send('Rain detail not found.');
     } else {
-      res.send('Rain details updated successfully.');
+      res.json(result[0]);
     }
   });
 });
 
-
-app.delete('/raindetails/:id', (req, res) => {
+// Route to update a rain detail by rain_id
+app.put('/update-rain/:id', (req, res) => {
   const { id } = req.params;
+  const { date_time, rain_amount } = req.body;
+  const query = `
+    UPDATE RainDetails 
+    SET date_time = ?, rain_amount = ?
+    WHERE rain_id = ?
+  `;
+  db.query(query, [date_time, rain_amount, id], (err, result) => {
+    if (err) return res.status(500).send('Error updating rain detail.');
+    res.send('Rain detail updated successfully.');
+  });
+});
 
-  const query = `DELETE FROM raindetails WHERE rain_id = ?`;
-
+// Route to delete a rain detail by rain_id
+app.delete('/delete-rain/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM RainDetails WHERE rain_id = ?';
   db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Error deleting rain details:', err);
-      res.status(500).send('Error deleting rain details.');
-    } else if (result.affectedRows === 0) {
-      res.status(404).send('Rain detail not found.');
-    } else {
-      res.send('Rain details deleted successfully.');
-    }
+    if (err) return res.status(500).send('Error deleting rain detail.');
+    res.send('Rain detail deleted successfully.');
   });
 });
+
 
 //********************************REPORT********************** */
 app.post('/add-report', (req, res) => {
@@ -649,41 +652,31 @@ app.get('/expendituredetails/:id', (req, res) => {
   });
 });
 
-app.put('/update-expenditure/:id', (req, res) => {
-  const { id } = req.params;
-  const { water, fertilizer, pruning, others, edate } = req.body;
-  
+// Endpoint to update an expenditure by expenditure_id
+app.put('/update-expenditure/:expenditure_id', (req, res) => {
+  const { expenditure_id } = req.params;
+  const { acre_id, water, fertilizer, pruning, others, edate } = req.body;
   const query = `
-    UPDATE Expenditure
-    SET water = ?, fertilizer = ?, pruning = ?, others = ?, edate = ? 
+    UPDATE Expenditure 
+    SET acre_id = ?, water = ?, fertilizer = ?, pruning = ?, others = ?, edate = ?
     WHERE expenditure_id = ?
   `;
-  
-  db.query(query, [water, fertilizer, pruning, others, edate, id], (err, result) => {
-    if (err) {
-      console.error('Error updating expenditure details:', err);
-      res.status(500).send('Error updating expenditure details.');
-    } else {
-      res.send('Expenditure details updated successfully.');
-    }
+  db.query(query, [acre_id, water, fertilizer, pruning, others, edate, expenditure_id], (err, result) => {
+    if (err) return res.status(500).send('Error updating expenditure.');
+    res.send('Expenditure updated successfully.');
   });
 });
 
-
-app.delete('/delete-expenditure/:id', (req, res) => {
-  const { id } = req.params;
-  
+// Endpoint to delete an expenditure by expenditure_id
+app.delete('/delete-expenditure/:expenditure_id', (req, res) => {
+  const { expenditure_id } = req.params;
   const query = 'DELETE FROM Expenditure WHERE expenditure_id = ?';
-  
-  db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Error deleting expenditure details:', err);
-      res.status(500).send('Error deleting expenditure details.');
-    } else {
-      res.send('Expenditure details deleted successfully.');
-    }
+  db.query(query, [expenditure_id], (err, result) => {
+    if (err) return res.status(500).send('Error deleting expenditure.');
+    res.send('Expenditure deleted successfully.');
   });
 });
+
 
 
 
