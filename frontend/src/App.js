@@ -27,6 +27,8 @@ import EditAcre from './EditAcre';
 import EditUser from './EditUser';
 import EditLabor from './EditLabor';
 import EditPlant from './EditPlant';
+import EditCropDetail from './EditCropDetail';
+import EditFertilizer from './EditFertilizer';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -96,9 +98,11 @@ function App() {
 
             <Route path='/add-cropDetail' element={<AddCropDetails />} />
             <Route path='/view-cropdetails' element={<ViewCropDetails />} />
+            <Route path='/edit-cropdetail/:id' element={<EditCropDetail />} />
 
             <Route path='/add-fertilizer' element={<AddFertilizers />} />
             <Route path='/view-fertilizerdetails' element={<ViewFertilizerDetails />} />
+            <Route path="/edit-fertilizerdetail/:fertilizer_id" element={<EditFertilizer />} />
 
             <Route path='/add-expenditure' element={<AddExpenditure />} />
             <Route path='/view-expendituredetails' element={<ViewExpenditureDetails />} />

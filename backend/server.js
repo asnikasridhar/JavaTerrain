@@ -560,6 +560,24 @@ app.get('/cropdetails', (req, res) => {
   });
 });
 
+// Endpoint to get crop details by crop_id
+app.get('/cropdetails/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT crop_id, acre_id, yield_obtained, selling_price FROM cropdetails WHERE crop_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error retrieving crop details by ID:', err);
+      return res.status(500).json({ error: 'Failed to retrieve crop details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Crop not found' });
+    }
+    res.json(results[0]);
+  });
+});
+
+
 // Endpoint to update a crop detail by crop_id
 app.put('/update-cropdetail/:crop_id', (req, res) => {
   const { crop_id } = req.params;
@@ -689,30 +707,75 @@ app.get('/fertilizers', (req, res) => {
   });
 });
 
+
+app.get('/fertilizerdetails/:id', (req, res) => {
+  const fertilizer_id = parseInt(req.params.id, 10);
+  const query = 'SELECT * FROM Fertilizers WHERE fertilizer_id = ?';
+
+  db.query(query, [fertilizer_id], (err, result) => {
+    if (err) {
+      console.error('Error fetching fertilizer details:', err);
+      res.status(500).send('Error fetching fertilizer details.');
+    } else if (result.length === 0) {
+      res.status(404).send('Fertilizer details not found.');
+    } else {
+      res.json(result[0]); // Send the first matching result
+    }
+  });
+});
+
+
+
 // Endpoint to update a fertilizer by fertilizer_id
 app.put('/update-fertilizer/:fertilizer_id', (req, res) => {
   const { fertilizer_id } = req.params;
   const { acre_id, fertilizer_name, date_of_application } = req.body;
+
+  // SQL query to update the fertilizer
   const query = `
     UPDATE Fertilizers 
     SET acre_id = ?, fertilizer_name = ?, date_of_application = ?
     WHERE fertilizer_id = ?
   `;
+
+  // Execute the query
   db.query(query, [acre_id, fertilizer_name, date_of_application, fertilizer_id], (err, result) => {
-    if (err) return res.status(500).send('Error updating fertilizer.');
+    if (err) {
+      console.error('Error updating fertilizer:', err);
+      return res.status(500).send('Error updating fertilizer.');
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Fertilizer not found.');
+    }
+
     res.send('Fertilizer updated successfully.');
   });
 });
 
+
 // Endpoint to delete a fertilizer by fertilizer_id
 app.delete('/delete-fertilizer/:fertilizer_id', (req, res) => {
   const { fertilizer_id } = req.params;
+
+  // SQL query to delete the fertilizer
   const query = 'DELETE FROM Fertilizers WHERE fertilizer_id = ?';
+
+  // Execute the query
   db.query(query, [fertilizer_id], (err, result) => {
-    if (err) return res.status(500).send('Error deleting fertilizer.');
+    if (err) {
+      console.error('Error deleting fertilizer:', err);
+      return res.status(500).send('Error deleting fertilizer.');
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Fertilizer not found.');
+    }
+
     res.send('Fertilizer deleted successfully.');
   });
 });
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
