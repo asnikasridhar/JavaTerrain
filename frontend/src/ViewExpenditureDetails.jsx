@@ -27,6 +27,7 @@ const ViewExpenditureDetails = () => {
             <th scope="col">Fertilizer</th>
             <th scope="col">Pruning</th>
             <th scope="col">Others</th>
+            <th scope="col">Spent On</th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +39,7 @@ const ViewExpenditureDetails = () => {
               <td>{expenditureDetail.fertilizer}</td>
               <td>{expenditureDetail.pruning}</td>
               <td>{expenditureDetail.others}</td>
+              <td>{expenditureDetail.edate}</td>
             </tr>
           ))}
         </tbody>

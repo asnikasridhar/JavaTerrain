@@ -605,10 +605,11 @@ app.delete('/delete-cropdetail/:crop_id', (req, res) => {
 
 //*******************EXP******************************* */
 app.post('/add-expenditure', (req, res) => {
-  const { acre_id, water, fertilizer, pruning, others } = req.body;
-  const query = `INSERT INTO Expenditure (acre_id, water, fertilizer, pruning, others) VALUES (?, ?, ?, ?, ?)`;
+  console.log(req.body);
+  const { acre_id, water, fertilizer, pruning, others, edate } = req.body;
+  const query = `INSERT INTO Expenditure (acre_id, water, fertilizer, pruning, others, edate) VALUES (?, ?, ?, ?, ?, ?)`;
 
-  db.query(query, [acre_id, water, fertilizer, pruning, others], (err, result) => {
+  db.query(query, [acre_id, water, fertilizer, pruning, others, edate], (err, result) => {
     if (err) {
       console.error('Error adding expenditure details:', err);
       res.status(500).send('Error adding expenditure details.');
@@ -650,15 +651,15 @@ app.get('/expendituredetails/:id', (req, res) => {
 
 app.put('/update-expenditure/:id', (req, res) => {
   const { id } = req.params;
-  const { water, fertilizer, pruning, others } = req.body;
+  const { water, fertilizer, pruning, others, edate } = req.body;
   
   const query = `
     UPDATE Expenditure
-    SET water = ?, fertilizer = ?, pruning = ?, others = ?
+    SET water = ?, fertilizer = ?, pruning = ?, others = ?, edate = ? 
     WHERE expenditure_id = ?
   `;
   
-  db.query(query, [water, fertilizer, pruning, others, id], (err, result) => {
+  db.query(query, [water, fertilizer, pruning, others, edate, id], (err, result) => {
     if (err) {
       console.error('Error updating expenditure details:', err);
       res.status(500).send('Error updating expenditure details.');

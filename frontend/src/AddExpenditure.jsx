@@ -9,6 +9,7 @@ function AddExpenditure() {
     fertilizer: '',
     pruning: '',
     others: '',
+    edate:''
   });
 
   const handleChange = (e) => {
@@ -102,6 +103,19 @@ function AddExpenditure() {
             placeholder="Enter Other Expenses"
           />
         </div>
+        <div className="form-group mb-3">
+          <label htmlFor="edate">Expense Date</label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            id="edate"
+            name="edate"
+            value={expenditureData.edate}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
         <button type="submit" className="btn btn-primary w-100">Add Expenditure Details</button>
       </form>
     </div>
