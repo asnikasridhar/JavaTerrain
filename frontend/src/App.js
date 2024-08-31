@@ -25,6 +25,8 @@ import ViewRainDetails from './ViewRainDetails';
 import ViewReportDetails from './ViewReportDetails';
 import EditAcre from './EditAcre';
 import EditUser from './EditUser';
+import EditLabor from './EditLabor';
+import EditPlant from './EditPlant';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -82,6 +84,7 @@ function App() {
 
             <Route path="/add-labor" element={<AddLabor />} />
             <Route path="/view-labordetails" element={<ViewLaborDetails />} />
+            <Route path="/edit-labor/:id" element={<EditLabor />} />
 
             <Route path="/add-user" element={<AddUser />} />
             <Route path="/view-userdetails" element={<ViewUserDetails />} />
@@ -89,6 +92,7 @@ function App() {
 
             <Route path='/add-plantdetails' element={<AddPlantDetails />} />
             <Route path='/view-plantdetails' element={<ViewPlantDetails />} />
+            <Route path='/edit-plant/:id' element={<EditPlant />} />
 
             <Route path='/add-cropDetail' element={<AddCropDetails />} />
             <Route path='/view-cropdetails' element={<ViewCropDetails />} />

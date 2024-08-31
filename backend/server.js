@@ -215,6 +215,60 @@ app.get('/labor/:id', (req, res) => {
   });
 });
 
+// Endpoint to update labor details by labor_id
+app.put('/labors/:id', (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    age,
+    adhar_card,
+    bank_details,
+    health_history,
+    photo,
+    address,
+    emergency_details
+  } = req.body;
+
+  const query = `
+    UPDATE labors 
+    SET 
+      name = ?, 
+      age = ?, 
+      adhar_card = ?, 
+      bank_details = ?, 
+      health_history = ?, 
+      photo = ?, 
+      address = ?, 
+      emergency_details = ?
+    WHERE labor_id = ?
+  `;
+
+  db.query(
+    query,
+    [
+      name,
+      age,
+      adhar_card,
+      bank_details,
+      health_history,
+      photo,
+      address,
+      emergency_details,
+      id
+    ],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating labor details:', err);
+        return res.status(500).json({ error: 'Failed to update labor details' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Labor not found' });
+      }
+      res.json({ message: 'Labor details updated successfully' });
+    }
+  );
+});
+
 
 //*************************FERTILIZER************************ */
 // Route to add a new fertilizer
@@ -440,6 +494,25 @@ app.get('/plantdetails', (req, res) => {
     res.json(results);
   });
 });
+
+
+// Endpoint to get plant details by plant_id
+app.get('/plantdetails/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM plantdetails WHERE plant_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error retrieving plant details by ID:', err);
+      return res.status(500).json({ error: 'Failed to retrieve plant details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Plant not found' });
+    }
+    res.json(results[0]);
+  });
+});
+
 
 // Endpoint to update a plant detail by plant_id
 app.put('/update-plantdetail/:plant_id', (req, res) => {
