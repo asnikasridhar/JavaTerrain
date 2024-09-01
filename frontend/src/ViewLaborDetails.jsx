@@ -70,7 +70,7 @@ const ViewLaborDetails = () => {
                   className="btn btn-outline-danger btn-sm"
                   onClick={() => handleDelete(laborDetail.labor_id)}
                 >
-                  <i className="bi bi-trash"></i>Delete
+                  <i className="bi bi-trash"></i>
                 </button>
               </td>
             </tr>

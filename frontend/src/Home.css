@@ -1,0 +1,12 @@
+/* Home.css */
+.home-container {
+    background-image: url('../images/WhatsApp\ Image\ 2024-08-24\ at\ 1.47.04\ PM.jpeg'); /* Adjust the path to your image */
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Make sure the height covers the entire viewport */
+    color: #fff;   /* Optional: Adjust text color to ensure visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
