@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css'; // Adjust the path as needed
 
+
+
 const Home = () => {
+
+  
+useEffect(()=>{
+
+  let userData = JSON.stringify({"userId":1, "propertyId":[1,2]});
+  localStorage.setItem("userDetails",userData);
+  localStorage.setItem("selProperty","1");
+
+})
+
   return (
     <div className="home-container">
       <div className="text-center">
