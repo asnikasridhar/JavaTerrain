@@ -23,7 +23,7 @@ function AddProperty() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    const user_id = userDetails ? userDetails.user_id : null;
+    const user_id = userDetails ? userDetails.userId : null;
 
     if (!user_id) {
       setMessage('User ID not found in local storage.');

@@ -33,6 +33,7 @@ import EditExpenditure from './EditExpenditure';
 import EditRain from './EditRain';
 import AddProperty from './AddProperty';
 import ViewPropertyDetails from './ViewPropertyDetails';
+import EditProperty from './EditProperty';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -124,6 +125,7 @@ function App() {
 
             <Route path='/add-property' element={<AddProperty />} />
             <Route path='/view-property' element={<ViewPropertyDetails />} />
+            <Route path='/edit-property/:id' element={<EditProperty />} />
 
             {/* Redirect all unknown routes to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />

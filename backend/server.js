@@ -1020,7 +1020,7 @@ app.get('/properties', (req, res) => {
 // Endpoint to get property details by property_id
 app.get('/propertydetails/:id', (req, res) => {
   const property_id = parseInt(req.params.id, 10);
-  const query = 'SELECT * FROM Properties WHERE property_id = ?';
+  const query = 'SELECT * FROM Property WHERE property_id = ?';
 
   db.query(query, [property_id], (err, result) => {
     if (err) {
@@ -1063,7 +1063,7 @@ app.put('/update-property/:property_id', (req, res) => {
 
   // SQL query to update the property
   const query = `
-    UPDATE Properties
+    UPDATE Property
     SET property_name = ?, total_acre = ?, address_1 = ?, address_2 = ?, pincode = ?, user_id = ?, modified_on = ?, modified_by = ?
     WHERE property_id = ?
   `;
@@ -1088,7 +1088,7 @@ app.delete('/delete-property/:property_id', (req, res) => {
   const { property_id } = req.params;
 
   // SQL query to delete the property
-  const query = 'DELETE FROM Properties WHERE property_id = ?';
+  const query = 'DELETE FROM Property WHERE property_id = ?';
 
   // Execute the query
   db.query(query, [property_id], (err, result) => {
