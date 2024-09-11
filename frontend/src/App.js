@@ -34,6 +34,9 @@ import EditRain from './EditRain';
 import AddProperty from './AddProperty';
 import ViewPropertyDetails from './ViewPropertyDetails';
 import EditProperty from './EditProperty';
+import AddBlock from './AddBlock';
+import EditBlock from './EditBlock';
+import ViewBlock from './ViewBlock';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -61,6 +64,7 @@ function App() {
               <Dropdown.Item as={Link} to="/add-raindetails">Add Rain Details</Dropdown.Item>
               <Dropdown.Item as={Link} to="/add-reports">Add Reports</Dropdown.Item>
               <Dropdown.Item as={Link} to="/add-property">Add Property</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/add-block">Add Block</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
 
@@ -80,6 +84,7 @@ function App() {
               <Dropdown.Item as={Link} to="/view-raindetails">View Rain Details</Dropdown.Item>
               <Dropdown.Item as={Link} to="/view-reportdetails">View Report Details</Dropdown.Item>
               <Dropdown.Item as={Link} to="/view-property">View Property Details</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/view-block">View Block Details</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </nav>
@@ -126,6 +131,10 @@ function App() {
             <Route path='/add-property' element={<AddProperty />} />
             <Route path='/view-property' element={<ViewPropertyDetails />} />
             <Route path='/edit-property/:id' element={<EditProperty />} />
+
+            <Route path='/add-block' element={<AddBlock/>}/>
+            <Route path='/view-block' element={<ViewBlock/>}/>
+            <Route path='/edit-block/:id' element={<EditBlock />} />
 
             {/* Redirect all unknown routes to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />

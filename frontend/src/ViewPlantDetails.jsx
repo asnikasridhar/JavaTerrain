@@ -7,9 +7,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 const ViewPlantDetails = () => {
   const [plantDetails, setPlantDetails] = useState([]);
   const [error, setError] = useState(null);
-
+  const selProperty = JSON.parse(localStorage.getItem('selProperty'));
   useEffect(() => {
-    axios.get('http://localhost:3000/plantdetails')
+    axios.get(`http://localhost:3000/plantdetails-by-prop/${selProperty}`)
       .then(response => {
         setPlantDetails(response.data);
       })
@@ -41,9 +41,9 @@ const ViewPlantDetails = () => {
         <thead className="thead-dark">
           <tr>
             <th scope="col">Plant ID</th>
-            <th scope="col">Acre ID</th>
             <th scope="col">Plant Type</th>
             <th scope="col">Details</th>
+            <th scope="col">Block Id</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -51,9 +51,9 @@ const ViewPlantDetails = () => {
           {plantDetails.map((plantDetail, index) => (
             <tr key={index}>
               <td>{plantDetail.plant_id}</td>
-              <td>{plantDetail.acre_id}</td>
               <td>{plantDetail.plant_type}</td>
               <td>{plantDetail.details}</td>
+              <td>{plantDetail.block_id}</td>
               <td className="text-center">
                 <Link to={`/edit-plant/${plantDetail.plant_id}`} className="btn btn-outline-primary btn-sm me-2">
                   Edit <i className="bi bi-pencil-square"></i>

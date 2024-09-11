@@ -6,9 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ViewRainDetails = () => {
   const [rainDetails, setRainDetails] = useState([]);
   const navigate = useNavigate();
-
+  const selProperty = JSON.parse(localStorage.getItem('selProperty'));
   useEffect(() => {
-    axios.get('http://localhost:3000/raindetails')
+    axios.get(`http://localhost:3000/raindetails-prop/${selProperty}`)
       .then(response => {
         setRainDetails(response.data);
       })
@@ -42,6 +42,7 @@ const ViewRainDetails = () => {
             <th scope="col">Rain ID</th>
             <th scope="col">Date and Time</th>
             <th scope="col">Rain Amount (mm)</th>
+            <th scope="col">Block Name</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -51,6 +52,7 @@ const ViewRainDetails = () => {
               <td>{rainDetail.rain_id}</td>
               <td>{new Date(rainDetail.date_time).toLocaleString()}</td>
               <td>{rainDetail.rain_amount}</td>
+              <td>{rainDetail.block_name}</td>
               <td>
                 <button
                   className="btn btn-primary btn-sm me-2"

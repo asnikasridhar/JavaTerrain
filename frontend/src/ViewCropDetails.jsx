@@ -6,9 +6,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ViewCropDetails = () => {
   const [cropDetails, setCropDetails] = useState([]);
   const navigate = useNavigate();
+  const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get('http://localhost:3000/cropdetails')
+    axios.get(`http://localhost:3000/cropdetails-by-prop/${selProperty}`)
       .then(response => {
         setCropDetails(response.data);
       })
@@ -40,7 +41,7 @@ const ViewCropDetails = () => {
         <thead className="thead-dark">
           <tr>
             <th scope="col">Crop ID</th>
-            <th scope="col">Acre ID</th>
+            <th scope="col">Property ID</th>
             <th scope="col">Yield Obtained</th>
             <th scope="col">Selling Price</th>
             <th scope="col">Actions</th>
@@ -50,7 +51,7 @@ const ViewCropDetails = () => {
           {cropDetails.map((cropDetail, index) => (
             <tr key={index}>
               <td>{cropDetail.crop_id}</td>
-              <td>{cropDetail.acre_id}</td>
+              <td>{cropDetail.property_id}</td>
               <td>{cropDetail.yield_obtained}</td>
               <td>{cropDetail.selling_price}</td>
               <td>

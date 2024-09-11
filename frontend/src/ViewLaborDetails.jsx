@@ -7,9 +7,10 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 const ViewLaborDetails = () => {
   const [laborDetails, setLaborDetails] = useState([]);
   const [error, setError] = useState(null);
+  const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get('http://localhost:3000/labors')
+    axios.get(`http://localhost:3000/labors-prop/${selProperty}`)
       .then(response => {
         setLaborDetails(response.data);
       })

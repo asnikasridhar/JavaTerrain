@@ -8,9 +8,11 @@ const ViewAcreDetails = () => {
   const [acreDetails, setAcreDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const userId = userDetails?.userId;
 
   useEffect(() => {
-    axios.get('http://localhost:3000/acredetails')
+    axios.get(`http://localhost:3000/acredetailsbyuserid/${userId}`)
       .then(response => {
         setAcreDetails(response.data);
         setLoading(false);

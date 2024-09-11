@@ -143,6 +143,24 @@ app.get('/acredetails', (req, res) => {
   });
 });
 
+
+// Route to get all acre details by userid
+app.get('/acredetailsbyuserid/:userId', (req, res) => {
+  const { userId } = req.params; // Get the acre ID from the request parameters
+  console.log(userId);
+  const query = `
+    SELECT acre_id, user_id, acre_size, plant_type, terrain, location, water_availability, property_id, created_on, created_by, modified_on, modified_by
+    FROM Acres where user_id = ?
+  `;
+
+  db.query(query,[userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching acre details:', err.stack);
+      return res.status(500).json({ error: 'Failed to retrieve acre details' });
+    }
+    res.json(results);
+  });
+});
 // Route to get acre details by acre_id
 app.get('/acredetails/:id', (req, res) => {
   const { id } = req.params; // Get the acre ID from the request parameters
@@ -226,6 +244,27 @@ app.get('/labors', (req, res) => {
     res.json(results);
   });
 });
+
+// Endpoint to get labor details by property_id
+app.get('/labors-prop/:property_id', (req, res) => {
+  const propertyId = req.params.property_id; // Get the property_id from the request parameters
+
+  const query = `
+    SELECT l.labor_id, l.user_id, l.name, l.age, l.adhar_card, l.bank_details, l.health_history, l.photo, l.address, l.emergency_details, l.created_on, l.created_by, l.modified_on, l.modified_by
+    FROM Labors l
+    JOIN propertylabor pl ON l.labor_id = pl.labor_id
+    WHERE pl.proper_id = ?
+  `;
+
+  db.query(query, [propertyId], (err, results) => {
+    if (err) {
+      console.error('Error retrieving labor details for property_id:', err.stack);
+      return res.status(500).json({ error: 'Failed to retrieve labor details' });
+    }
+    res.json(results);
+  });
+});
+
 
 // Endpoint to get labor details by labor_id
 app.get('/labor/:id', (req, res) => {
@@ -338,7 +377,7 @@ app.post('/add-rain', (req, res) => {
 // Route to get all rain details
 app.get('/raindetails', (req, res) => {
   const query = `
-    SELECT rain_id, acre_id, date_time, rain_amount, block_id, created_on, created_by, modified_on, modified_by 
+    SELECT rain_id, date_time, rain_amount, block_id, created_on, created_by, modified_on, modified_by 
     FROM RainDetails
   `;
   db.query(query, (err, results) => {
@@ -351,11 +390,30 @@ app.get('/raindetails', (req, res) => {
   });
 });
 
+
+// Route to get all rain details
+app.get('/raindetails-prop/:property_id', (req, res) => {
+  const { property_id } = req.params;
+  const query = `
+   select r.rain_id, r.rain_amount, r.date_time, r.block_id, b.block_name, r.created_by, r.created_on,
+r.modified_by, r.modified_on from  raindetails r inner join blocks b on r.block_id= b.block_id
+inner join property p on p.property_id = b.property_id where p.property_id =?
+  `;
+  db.query(query, [property_id],(err, results) => {
+    if (err) {
+      console.error('Error fetching rain details:', err);
+      return res.status(500).send('Error fetching rain details.');
+    } else {
+      res.json(results);
+    }
+  });2
+});
+
 // Route to get a specific rain detail by rain_id
 app.get('/raindetails/:id', (req, res) => {
   const rain_id = parseInt(req.params.id, 10);
   const query = `
-    SELECT rain_id, acre_id, date_time, rain_amount, block_id, created_on, created_by, modified_on, modified_by 
+    SELECT rain_id, date_time, rain_amount, block_id, created_on, created_by, modified_on, modified_by 
     FROM RainDetails 
     WHERE rain_id = ?
   `;
@@ -382,7 +440,7 @@ app.put('/update-rain/:id', (req, res) => {
     WHERE rain_id = ?
   `;
   db.query(query, [date_time, rain_amount, block_id, modified_on, modified_by, id], (err, result) => {
-    if (err) return res.status(500).send('Error updating rain detail.');
+    if (err) return res.status(500).send('Error updating rain detail. error: '+ err);
     if (result.affectedRows === 0) {
       return res.status(404).send('Rain detail not found.');
     }
@@ -580,6 +638,50 @@ app.get('/plantdetails/:id', (req, res) => {
   });
 });
 
+
+
+
+// Endpoint to get all plant details for a given property_id
+app.get('/plantdetails-by-prop/:property_id', (req, res) => {
+  const propertyId = parseInt(req.params.property_id, 10);
+
+  // Validate property_id
+  if (isNaN(propertyId)) {
+    return res.status(400).json({ error: 'Invalid property_id' });
+  }
+
+  // SQL query to get block IDs for the given property_id
+  const blocksQuery = 'SELECT block_id FROM blocks WHERE property_id = ?';
+
+  db.query(blocksQuery, [propertyId], (err, blocks) => {
+    if (err) {
+      console.error('Error retrieving blocks:', err);
+      return res.status(500).json({ error: 'Error retrieving blocks' });
+    }
+
+    if (blocks.length === 0) {
+      return res.status(404).json({ error: 'No blocks found for the given property' });
+    }
+
+    // Extract block IDs
+    const blockIds = blocks.map(block => block.block_id);
+
+    // SQL query to get plant details for the block IDs
+    const plantDetailsQuery = 'SELECT * FROM plantdetails WHERE block_id IN (?)';
+
+    db.query(plantDetailsQuery, [blockIds], (err, plantDetails) => {
+      if (err) {
+        console.error('Error retrieving plant details:', err);
+        return res.status(500).json({ error: 'Error retrieving plant details' });
+      }
+
+      res.json(plantDetails);
+    });
+  });
+});
+
+
+
 // Endpoint to update a plant detail by plant_id
 app.put('/update-plantdetail/:plant_id', (req, res) => {
   const { plant_id } = req.params;
@@ -640,6 +742,23 @@ app.get('/cropdetails', (req, res) => {
   });
 });
 
+
+// Endpoint to get crop details by crop_id
+app.get('/cropdetails-by-prop/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'SELECT * FROM CropDetails WHERE property_id = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error retrieving crop details by ID:', err);
+      return res.status(500).json({ error: 'Failed to retrieve crop details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Crop not found' });
+    }
+    res.json(results);
+  });
+});
 // Endpoint to get crop details by crop_id
 app.get('/cropdetails/:id', (req, res) => {
   const { id } = req.params;
@@ -738,10 +857,30 @@ app.get('/expendituredetails/:id', (req, res) => {
     } else if (result.length === 0) {
       res.status(404).send('Expenditure details not found.');
     } else {
-      res.json(result[0]); // Send the first matching result
+      res.json(result[0]); // Send the first matching result..
     }
   });
 });
+
+// Endpoint to get expenditure details by property_id
+app.get('/expendituredetails-by-prop/:property_id/:days', (req, res) => {
+  const propertyId = req.params.property_id;
+  const days = parseInt(req.params.days, 10); // Parse the number of days from the request parameters
+
+  const query = `SELECT * FROM Expenditure 
+                 WHERE property_id = ? 
+                 AND edate >= DATE_SUB(CURDATE(), INTERVAL ? DAY)`;
+
+  db.query(query, [propertyId, days], (err, result) => {
+    if (err) {
+      console.error('Error fetching expenditure details:', err);
+      res.status(500).send('Error fetching expenditure details.');
+    } else {
+      res.json(result);
+    }
+  });
+});
+
 
 // Endpoint to update an expenditure by expenditure_id
 app.put('/update-expenditure/:expenditure_id', (req, res) => {
@@ -825,6 +964,28 @@ app.get('/fertilizerdetails/:id', (req, res) => {
     }
   });
 });
+
+// Endpoint to get fertilizers by property_id and date_of_application in the last n days
+app.get('/fertilizers-by-prop/:property_id/:days', (req, res) => {
+  const propertyId = req.params.property_id; // Get property_id from URL params
+  const days = parseInt(req.params.days, 10); // Parse the number of days from the request parameters
+
+  const query = `
+    SELECT fertilizer_id, fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 
+    FROM Fertilizers
+    WHERE property_id = ?
+    AND date_of_application >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+  `;
+
+  db.query(query, [propertyId, days], (err, results) => {
+    if (err) {
+      console.error('Error retrieving fertilizers:', err);
+      return res.status(500).send('Error retrieving fertilizers.');
+    }
+    res.json(results); // Send the result as a JSON array
+  });
+});
+
 
 // Endpoint to update a fertilizer by fertilizer_id
 app.put('/update-fertilizer/:fertilizer_id', (req, res) => {
@@ -1104,6 +1265,109 @@ app.delete('/delete-property/:property_id', (req, res) => {
     res.send('Property deleted successfully.');
   });
 });
+
+/***************BLOCK******************* */
+
+// Endpoint to add a new block
+app.post('/addblock', (req, res) => {
+  const { block_name, block_area, property_id } = req.body;
+
+  const query = `
+    INSERT INTO blocks (block_name, block_area, property_id)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(query, [block_name, block_area, property_id], (err, result) => {
+    if (err) {
+      console.error('Error adding block:', err.stack);
+      return res.status(500).json({ error: 'Failed to add block' });
+    }
+    res.status(201).json({ message: 'Block added successfully', block_id: result.insertId });
+  });
+});
+
+// Endpoint to get block by ID
+app.get('/blockdetails/:id', (req, res) => {
+  const blockId = req.params.id;
+  const query = 'SELECT * FROM blocks WHERE block_id = ?';
+
+  db.query(query, [blockId], (err, results) => {
+    if (err) {
+      console.error('Error retrieving block details:', err);
+      return res.status(500).send('Error retrieving block details.');
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send('Block not found.');
+    }
+
+    res.json(results[0]); // Send the first result (block) as JSON
+  });
+});
+
+// Endpoint to get all blocks by property_id
+app.get('/blocks-by-prop/:property_id', (req, res) => {
+  const propertyId = req.params.property_id;
+
+  const query = `
+    SELECT block_id, block_name, block_area, property_id 
+    FROM blocks 
+    WHERE property_id = ?
+  `;
+
+  db.query(query, [propertyId], (err, results) => {
+    if (err) {
+      console.error('Error retrieving blocks for property_id:', err.stack);
+      return res.status(500).json({ error: 'Failed to retrieve blocks' });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to update a block by block_id
+app.put('/updateblock/:block_id', (req, res) => {
+  const blockId = req.params.block_id;
+  const { block_name, block_area, property_id } = req.body;
+
+  const query = `
+    UPDATE blocks 
+    SET block_name = ?, block_area = ?, property_id = ?
+    WHERE block_id = ?
+  `;
+
+  db.query(query, [block_name, block_area, property_id, blockId], (err, result) => {
+    if (err) {
+      console.error('Error updating block:', err.stack);
+      return res.status(500).json({ error: 'Failed to update block' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Block not found' });
+    }
+    res.json({ message: 'Block updated successfully' });
+  });
+});
+
+// Endpoint to delete a block by block_id
+app.delete('/deleteblock/:block_id', (req, res) => {
+  const blockId = req.params.block_id;
+
+  const query = `
+    DELETE FROM blocks
+    WHERE block_id = ?
+  `;
+
+  db.query(query, [blockId], (err, result) => {
+    if (err) {
+      console.error('Error deleting block:', err.stack);
+      return res.status(500).json({ error: 'Failed to delete block' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Block not found' });
+    }
+    res.json({ message: 'Block deleted successfully' });
+  });
+});
+
 
 
 app.listen(port, () => {
