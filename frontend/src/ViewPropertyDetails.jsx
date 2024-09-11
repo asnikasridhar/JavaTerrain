@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const  ViewPropertyDetails=()=> {
   const [properties, setProperties] = useState([]);
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-  const userId = userDetails?.userId;
+  const userId = userDetails?.user_id;
   const navigate = useNavigate();
 
   useEffect(() => {

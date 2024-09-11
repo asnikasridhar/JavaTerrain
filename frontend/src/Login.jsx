@@ -19,6 +19,9 @@ const Login = () => {
     .then(response => {
       if (response.status === 200) {
         // Redirect to Home page on successful login
+        localStorage.setItem('userDetails', JSON.stringify(response.data));
+        localStorage.setItem('selPropertyName', response.data.property_name);
+        localStorage.setItem('selProperty', response.data.property_id);
         navigate('/');
       }
     })

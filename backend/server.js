@@ -31,7 +31,9 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   // Check if user exists
-  const query = 'SELECT * FROM users WHERE email = ? AND is_active = 1';
+  const query = `SELECT u.*, p.property_id, p.property_name FROM users u inner join propertyuser pu on u.user_id = pu.user_id 
+                inner join property p on p.property_id = pu.property_id
+                where email = ? AND is_active = 1`;
   db.query(query, [email], (err, results) => {
     if (err) {
       console.error('Error retrieving user details:', err);
@@ -60,6 +62,8 @@ app.post('/login', (req, res) => {
         user_id: user.user_id,
         username: user.username,
         role: user.role,
+        property_id:user.property_id,
+        property_name: user.property_name,
         message: 'Login successful'
       });
     });

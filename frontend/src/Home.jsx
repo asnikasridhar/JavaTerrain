@@ -8,15 +8,15 @@ const Home = () => {
   const [selectedProperty, setSelectedProperty] = useState('');
 
   // Simulate user data storage
-  let userData = JSON.stringify({
-    userId: 1,
-    user_name: 'Asnika',
-    email: 'asnikasridhar1@gmail.com',
-    propertyId: [1, 2]
-  });
-  localStorage.setItem('userDetails', userData);
-  localStorage.setItem('selPropertyName', 'TestProperty11');
-  localStorage.setItem('selProperty', '1');
+  // let userData = JSON.stringify({
+  //   userId: 1,
+  //   user_name: 'Asnika',
+  //   email: 'asnikasridhar1@gmail.com',
+  //   propertyId: [1, 2]
+  // });
+  // localStorage.setItem('userDetails', userData);
+  // localStorage.setItem('selPropertyName', 'TestProperty11');
+  // localStorage.setItem('selProperty', '1');
 
   useEffect(() => {
     // Fetch user details from localStorage
