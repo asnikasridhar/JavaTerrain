@@ -37,6 +37,7 @@ import EditProperty from './EditProperty';
 import AddBlock from './AddBlock';
 import EditBlock from './EditBlock';
 import ViewBlock from './ViewBlock';
+import Login  from './Login';
 
 function App() {
   const [activeTab, setActiveTab] = useState('view'); // default to 'view'
@@ -98,6 +99,7 @@ function App() {
         <Container className="mb-4">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/add-acre" element={<AddAcre />} />
             <Route path="/view-acredetails" element={<ViewAcreDetails />} />
             <Route path="/edit-acre/:id" element={<EditAcre />} />

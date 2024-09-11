@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -20,20 +21,78 @@ db.connect(err => {
   if (err) throw err;
   console.log('Connected to database');
 });
+
+
+/***************LOGIN**************/
+
+// POST /login route to handle login
+// POST /login route to handle login using callbacks
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  console.log(req.body);
+  // Check if user exists
+  const query = 'SELECT * FROM users WHERE email = ? AND is_active = 1';
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.error('Error retrieving user details:', err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User not found or inactive' });
+    }
+
+    const user = results[0];
+
+    // Verify password
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(500).json({ error: 'Server error' });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+
+      // If login is successful
+      return res.json({
+        user_id: user.user_id,
+        username: user.username,
+        role: user.role,
+        message: 'Login successful'
+      });
+    });
+  });
+});
+
+
+
 //***************************USER***************************************** */
+
 
 // Route to add a new user
 app.post('/add-user', (req, res) => {
+
+  console.log(req.body)
+  
   const { username, password, role, is_active, email, created_by } = req.body;
   const created_on = new Date();
+
+    // Hash password before storing
+    bcrypt.hash(password, 10, (err, hash) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error hashing password' });
+      }
   const query = `
     INSERT INTO users (username, password, role, is_active, email, created_on, created_by)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [username, password, role, is_active, email, created_on, created_by], (err, result) => {
+  db.query(query, [username, hash, role, is_active, email, created_on, created_by], (err, result) => {
     if (err) return res.status(500).send('Error adding user.');
     res.send('User added successfully');
   });
+});
 });
 
 // Endpoint to get all user details
