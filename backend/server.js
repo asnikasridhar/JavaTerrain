@@ -650,34 +650,16 @@ app.get('/plantdetails-by-prop/:property_id', (req, res) => {
     return res.status(400).json({ error: 'Invalid property_id' });
   }
 
-  // SQL query to get block IDs for the given property_id
-  const blocksQuery = 'SELECT block_id FROM blocks WHERE property_id = ?';
-
-  db.query(blocksQuery, [propertyId], (err, blocks) => {
-    if (err) {
-      console.error('Error retrieving blocks:', err);
-      return res.status(500).json({ error: 'Error retrieving blocks' });
-    }
-
-    if (blocks.length === 0) {
-      return res.status(404).json({ error: 'No blocks found for the given property' });
-    }
-
-    // Extract block IDs
-    const blockIds = blocks.map(block => block.block_id);
-
-    // SQL query to get plant details for the block IDs
-    const plantDetailsQuery = 'SELECT * FROM plantdetails WHERE block_id IN (?)';
-
-    db.query(plantDetailsQuery, [blockIds], (err, plantDetails) => {
-      if (err) {
-        console.error('Error retrieving plant details:', err);
-        return res.status(500).json({ error: 'Error retrieving plant details' });
-      }
-
-      res.json(plantDetails);
-    });
+  const query = `
+  select p.plant_id, p.plant_type, p.details, b.block_name,p.block_id  from plantdetails p 
+  inner join blocks b on p.block_id = b.block_id inner join property pp on pp.property_id = b.property_id
+  where b.property_id= ?
+  `;
+  db.query(query,[propertyId],(err,results)=>{
+    if (err) return res.status(500).send('Error getting plant detail.');
+    res.json(results);
   });
+
 });
 
 
@@ -685,18 +667,18 @@ app.get('/plantdetails-by-prop/:property_id', (req, res) => {
 // Endpoint to update a plant detail by plant_id
 app.put('/update-plantdetail/:plant_id', (req, res) => {
   const { plant_id } = req.params;
-  const { acre_id, plant_type, details, block_id, plantdetailscol, modified_by } = req.body;
+  const { block_id, plant_type, details, modified_by } = req.body;
 
   // Set the current date and time for modified_on
   const modified_on = new Date();
 
   const query = `
     UPDATE plantdetails 
-    SET acre_id = ?, plant_type = ?, details = ?, block_id = ?, plantdetailscol = ?, modified_on = ?, modified_by = ?
+    SET block_id = ?, plant_type = ?, details = ?, modified_on = ?, modified_by = ?
     WHERE plant_id = ?
   `;
 
-  db.query(query, [acre_id, plant_type, details, block_id, plantdetailscol, modified_on, modified_by, plant_id], (err, result) => {
+  db.query(query, [block_id, plant_type, details, modified_on, modified_by, plant_id], (err, result) => {
     if (err) return res.status(500).send('Error updating plant detail.');
     res.send('Plant detail updated successfully.');
   });
@@ -746,7 +728,7 @@ app.get('/cropdetails', (req, res) => {
 // Endpoint to get crop details by crop_id
 app.get('/cropdetails-by-prop/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'SELECT * FROM CropDetails WHERE property_id = ?';
+  const query = 'select c.*, p.property_name  from cropdetails c inner join property p on c.property_id = p.property_id WHERE c.property_id = ?';
 
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -1310,9 +1292,9 @@ app.get('/blocks-by-prop/:property_id', (req, res) => {
   const propertyId = req.params.property_id;
 
   const query = `
-    SELECT block_id, block_name, block_area, property_id 
-    FROM blocks 
-    WHERE property_id = ?
+    SELECT b.*, p.property_name
+    FROM blocks  b inner join property p on b.property_id = p.property_id
+    WHERE b.property_id = ?
   `;
 
   db.query(query, [propertyId], (err, results) => {

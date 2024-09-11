@@ -43,6 +43,7 @@ const ViewPlantDetails = () => {
             <th scope="col">Plant ID</th>
             <th scope="col">Plant Type</th>
             <th scope="col">Details</th>
+            <th scope="col">Block Name</th>
             <th scope="col">Block Id</th>
             <th scope="col">Actions</th>
           </tr>
@@ -53,6 +54,7 @@ const ViewPlantDetails = () => {
               <td>{plantDetail.plant_id}</td>
               <td>{plantDetail.plant_type}</td>
               <td>{plantDetail.details}</td>
+              <td>{plantDetail.block_name}</td>
               <td>{plantDetail.block_id}</td>
               <td className="text-center">
                 <Link to={`/edit-plant/${plantDetail.plant_id}`} className="btn btn-outline-primary btn-sm me-2">

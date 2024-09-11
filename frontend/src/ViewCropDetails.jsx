@@ -41,6 +41,7 @@ const ViewCropDetails = () => {
         <thead className="thead-dark">
           <tr>
             <th scope="col">Crop ID</th>
+            <th scope="col">Property Name</th>
             <th scope="col">Property ID</th>
             <th scope="col">Yield Obtained</th>
             <th scope="col">Selling Price</th>
@@ -51,6 +52,7 @@ const ViewCropDetails = () => {
           {cropDetails.map((cropDetail, index) => (
             <tr key={index}>
               <td>{cropDetail.crop_id}</td>
+              <td>{cropDetail.property_name}</td>
               <td>{cropDetail.property_id}</td>
               <td>{cropDetail.yield_obtained}</td>
               <td>{cropDetail.selling_price}</td>

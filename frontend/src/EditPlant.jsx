@@ -62,11 +62,11 @@ const EditPlant = () => {
       <h2 className="text-center mb-4">Edit Plant Details</h2>
       <form onSubmit={handleSubmit} className="container">
         <div className="mb-3">
-          <label className="form-label">Acre ID</label>
+          <label className="form-label">Block ID</label>
           <input
             type="number"
-            name="acre_id"
-            value={plantDetail.acre_id}
+            name="block_id"
+            value={plantDetail.block_id}
             onChange={handleChange}
             className="form-control"
             required

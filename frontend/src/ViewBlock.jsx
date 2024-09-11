@@ -51,6 +51,7 @@ const ViewBlock = () => {
             <th scope="col">Block ID</th>
             <th scope="col">Block Name</th>
             <th scope="col">Block Area</th>
+            <th scope="col">Property Name</th>
             <th scope="col">Property ID</th>
             <th scope="col">Actions</th>
           </tr>
@@ -61,6 +62,7 @@ const ViewBlock = () => {
               <td>{blockDetail.block_id}</td>
               <td>{blockDetail.block_name}</td>
               <td>{blockDetail.block_area}</td>
+              <td>{blockDetail.property_name}</td>
               <td>{blockDetail.property_id}</td>
               <td className="text-center">
                 <Link to={`/edit-block/${blockDetail.block_id}`} className="btn btn-outline-primary btn-sm me-2">
