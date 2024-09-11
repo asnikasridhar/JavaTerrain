@@ -1,20 +1,63 @@
-/* Home.css */
+
+
+  /* Set background image with appropriate sizing */
 .home-container {
-    background-image: url('../images/WhatsApp\ Image\ 2024-08-24\ at\ 1.47.04\ PM.jpeg'); /* Adjust the path to your image */
-    background-size: cover;
-    height: 100vh; 
-    justify-content: center;
-    align-items: center;
-  }
-  .container {
-    padding-top: 20px;
+  background-image: url('../images/WhatsApp\ Image\ 2024-08-24\ at\ 1.47.04\ PM.jpeg'); /* Adjust the path to your image */
+  background-size: cover;
+  background-position: center;
+  height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Styling for the user card on the top-right */
+.user-card {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* Style for the main welcome message */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add a background overlay for better contrast */
+.bg-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+/* General text styling */
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+}
+
+/* Add some space between the card and the top of the page */
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+/* Optional media query for responsive layout */
+@media (max-width: 768px) {
+  .user-card {
+      width: 100%;
+      margin-bottom: 10px;
   }
 
-  .sel-detail{
-    font-size: 10px;
-    
+  .bg-overlay {
+      width: 90%;
   }
-
-  .cus-bg{
-    background-color: rgba(13, 110, 253, 0.25);
-  }
+}

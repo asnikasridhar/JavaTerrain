@@ -6,6 +6,7 @@ const Home = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedProperty, setSelectedProperty] = useState('');
+
   // Simulate user data storage
   let userData = JSON.stringify({
     userId: 1,
@@ -18,8 +19,6 @@ const Home = () => {
   localStorage.setItem('selProperty', '1');
 
   useEffect(() => {
-    
-
     // Fetch user details from localStorage
     const storedUserData = JSON.parse(localStorage.getItem('userDetails'));
     if (storedUserData) {
@@ -35,24 +34,24 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="container mt-4 home-container">
+    <div className="container-fluid home-container">
       {/* Row for user details at the top-right corner */}
-      <div className="row justify-content-end">
-        <div className="col-md-4">
-          <div className="card">
-            <div className="card-body sel-detail" >
-              <p className="card-text"><strong>User:</strong> {userName}, <strong>Email:</strong> {email}</p>
-              <p className="card-text"><strong>Selected Property:</strong> {selectedProperty}</p>
+      <div className="row justify-content-end mt-3">
+        <div className="col-md-3 col-lg-2">
+          <div className="card shadow-sm user-card">
+            <div className="card-body text-center">
+              <p className="card-text mb-1"><strong>User:</strong> {userName}</p>
+              <p className="card-text"><strong>Property:</strong> {selectedProperty}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main welcome message */}
-      <div className="row justify-content-center mt-5 ">
-        <div className="col-md-8 text-center cus-bg">
-          <h2>Welcome to the Coffee Estate Management System</h2>
-          <p>Select an option from the menu above to get started.</p>
+      <div className="row justify-content-center align-items-center main-content">
+        <div className="col-md-8 text-center bg-overlay p-4 rounded shadow-lg">
+          <h2 className="text-light">Welcome to the Coffee Estate Management System</h2>
+          <p className="text-light">Select an option from the menu above to get started.</p>
         </div>
       </div>
     </div>
