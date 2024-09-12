@@ -6,17 +6,7 @@ const Home = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedProperty, setSelectedProperty] = useState('');
-
-  // Simulate user data storage
-  // let userData = JSON.stringify({
-  //   userId: 1,
-  //   user_name: 'Asnika',
-  //   email: 'asnikasridhar1@gmail.com',
-  //   propertyId: [1, 2]
-  // });
-  // localStorage.setItem('userDetails', userData);
-  // localStorage.setItem('selPropertyName', 'TestProperty11');
-  // localStorage.setItem('selProperty', '1');
+  const [allProperties, setAllProperties] = useState([]);
 
   useEffect(() => {
     // Fetch user details from localStorage
@@ -24,14 +14,31 @@ const Home = () => {
     if (storedUserData) {
       setUserName(storedUserData.user_name);
       setEmail(storedUserData.email);
-    }
+      setAllProperties(storedUserData.all_properties);
 
-    // Fetch selected property from localStorage
-    const storedProperty = localStorage.getItem('selPropertyName');
-    if (storedProperty) {
-      setSelectedProperty(storedProperty);
+      // Fetch selected property from localStorage
+      const storedPropertyName = localStorage.getItem('selPropertyName');
+      if (storedPropertyName) {
+        setSelectedProperty(storedPropertyName);
+      } else {
+        // Set the default property (first one in the list) if not selected
+        const defaultProperty = storedUserData.all_properties[0];
+        setSelectedProperty(defaultProperty.property_name);
+        localStorage.setItem('selPropertyName', defaultProperty.property_name);
+        localStorage.setItem('selProperty', defaultProperty.property_id);
+      }
     }
   }, []);
+
+  // Handle property selection change
+  const handlePropertyChange = (e) => {
+    const selectedProp = allProperties.find(prop => prop.property_id === parseInt(e.target.value));
+    if (selectedProp) {
+      setSelectedProperty(selectedProp.property_name);
+      localStorage.setItem('selPropertyName', selectedProp.property_name);
+      localStorage.setItem('selProperty', selectedProp.property_id);
+    }
+  };
 
   return (
     <div className="container-fluid home-container">
@@ -40,8 +47,23 @@ const Home = () => {
         <div className="col-md-3 col-lg-2">
           <div className="card shadow-sm user-card">
             <div className="card-body text-center">
-              <p className="card-text mb-1"><strong>User:</strong> {userName}</p>
-              <p className="card-text"><strong>Property:</strong> {selectedProperty}</p>
+              <p className="card-text mb-1 user"><strong>User:</strong> {userName}</p>
+
+              {/* Property Dropdown */}
+              <div className="form-group mt-3">
+                <select
+                  id="propertySelect"
+                  className="form-control"
+                  value={allProperties.find(prop => prop.property_name === selectedProperty)?.property_id || ''}
+                  onChange={handlePropertyChange}
+                >
+                  {allProperties.map((property) => (
+                    <option key={property.property_id} value={property.property_id}>
+                      {property.property_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>

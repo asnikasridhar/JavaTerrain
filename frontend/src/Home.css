@@ -61,3 +61,11 @@ p {
       width: 90%;
   }
 }
+
+.form-control {
+  text-align: center;;
+}
+
+.user{
+  font-size: 13px;
+}

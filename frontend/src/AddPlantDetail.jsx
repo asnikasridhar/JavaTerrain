@@ -33,15 +33,15 @@ function AddPlantDetails() {
       <h2 className="mb-4 text-center">Add Plant Details</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-3">
-          <label htmlFor="acre_id">Acre ID</label>
+          <label htmlFor="block_id">Block ID</label>
           <input
             type="text"
             className="form-control"
-            id="acre_id"
-            name="acre_id"
-            value={plantData.acre_id}
+            id="block_id"
+            name="block_id"
+            value={plantData.block_id}
             onChange={handleChange}
-            placeholder="Enter Acre ID"
+            placeholder="Enter Block ID"
             required
           />
         </div>

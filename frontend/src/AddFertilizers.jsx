@@ -33,15 +33,15 @@ function AddFertilizers() {
       <h2 className="mb-4 text-center">Add Fertilizer Details</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-3">
-          <label htmlFor="acre_id">Acre ID</label>
+          <label htmlFor="property_id">Property ID</label>
           <input
             type="text"
             className="form-control"
-            id="acre_id"
-            name="acre_id"
+            id="property_id"
+            name="property_id"
             value={fertilizerData.acre_id}
             onChange={handleChange}
-            placeholder="Enter Acre ID"
+            placeholder="Enter Property ID"
             required
           />
         </div>

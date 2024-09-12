@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -31,7 +32,15 @@ const Login = () => {
   };
 
   return (
-    <div className="container mt-5 d-flex justify-content-center">
+    <div className="container mt-5 d-flex flex-column align-items-center">
+      {/* Logo/Header section */}
+      <div className="mb-4 text-center">
+        <h1 className="java-terrain-logo">JavaTerrain</h1>
+        {/* You can use an image for a logo if you have one */}
+         <img  className="mb-4 logo" style={{ width: '200px' }} /> 
+      </div>
+
+      {/* Login card */}
       <div className="card p-4 shadow-sm" style={{ width: '400px' }}>
         <h2 className="text-center mb-4">Login</h2>
         <form onSubmit={handleLogin}>

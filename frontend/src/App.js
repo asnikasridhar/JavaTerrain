@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate, useLocation } from 'react-router-dom';
 import { Dropdown, ButtonGroup, Container, Navbar, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import AddAcre from './AddAcre';
 import AddLabor from './AddLabor';
 import AddUser from './AddUser';
@@ -38,28 +37,32 @@ import AddBlock from './AddBlock';
 import EditBlock from './EditBlock';
 import ViewBlock from './ViewBlock';
 import Login  from './Login';
+// import other components
 
 function App() {
-  const [activeTab, setActiveTab] = useState('view'); // default to 'view'
+  const location = useLocation();  // Now this works because App is wrapped by Router in index.js
 
-  return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
-        {/* Navbar */}
-        <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
-          <Container>
-            <Navbar.Brand href="/">Coffee Estate Management</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <Link to="/" className="nav-link">Home</Link>
+  // Determine whether the user is logged in
+  const isLoggedIn = localStorage.getItem('userDetails');
 
-                <Dropdown as={ButtonGroup} className="me-2">
-                  <Dropdown.Toggle variant="info">
-                    Add
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to="/add-acre">Add Acre</Dropdown.Item>
+  // Conditionally render the navbar based on the current path
+  const renderNavbar = () => {
+    if (location.pathname === '/login') {
+      return null;
+    }
+
+    return (
+      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
+        <Container>
+          <Navbar.Brand href="/">Coffee Estate Management</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Link to="/" className="nav-link">Home</Link>
+
+              <Dropdown as={ButtonGroup} className="me-2">
+                <Dropdown.Toggle variant="info">Add</Dropdown.Toggle>
+                <Dropdown.Menu>
                     <Dropdown.Item as={Link} to="/add-labor">Add Labor</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-user">Add User</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-plantdetails">Add Plant Details</Dropdown.Item>
@@ -70,16 +73,13 @@ function App() {
                     <Dropdown.Item as={Link} to="/add-reports">Add Reports</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-property">Add Property</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-block">Add Block</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown.Menu>
+              </Dropdown>
 
-                <Dropdown as={ButtonGroup} className="me-2">
-                  <Dropdown.Toggle variant="info">
-                    View
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to="/view-acredetails">View Acre Details</Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/view-labordetails">View Labor Details</Dropdown.Item>
+              <Dropdown as={ButtonGroup} className="me-2">
+                <Dropdown.Toggle variant="info">View</Dropdown.Toggle>
+                <Dropdown.Menu>
+                <Dropdown.Item as={Link} to="/view-labordetails">View Labor Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-userdetails">View User Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-plantdetails">View Plant Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-cropdetails">View Crop Details</Dropdown.Item>
@@ -89,19 +89,25 @@ function App() {
                     <Dropdown.Item as={Link} to="/view-reportdetails">View Report Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-property">View Property Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-block">View Block Details</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    );
+  };
 
-        <Container className="mb-4">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/add-acre" element={<AddAcre />} />
-            <Route path="/view-acredetails" element={<ViewAcreDetails />} />
+  return (
+    <div className="d-flex flex-column min-vh-100">
+      {renderNavbar()}
+
+      <Container className="mb-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/add-acre" element={<AddAcre />} />
+          <Route path="/view-acredetails" element={<ViewAcreDetails />} />
             <Route path="/edit-acre/:id" element={<EditAcre />} />
 
             <Route path="/add-labor" element={<AddLabor />} />
@@ -142,21 +148,20 @@ function App() {
             <Route path="/add-block" element={<AddBlock />} />
             <Route path="/view-block" element={<ViewBlock />} />
             <Route path="/edit-block/:id" element={<EditBlock />} />
-
             {/* Redirect all unknown routes to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Container>
 
-        {/* Footer */}
-        <footer className="bg-dark text-white text-center mt-auto py-3">
-          <Container>
-            <p>&copy; 2024 Coffee Estate Management. All rights reserved.</p>
-            <p>Designed by CoffeeEstateTech</p>
-          </Container>
-        </footer>
-      </div>
-    </Router>
+          {/* other routes */}
+        </Routes>
+      </Container>
+
+      <footer className="bg-dark text-white text-center mt-auto py-3">
+        <Container>
+          <p>&copy; 2024 Coffee Estate Management. All rights reserved.</p>
+          <p>Designed by CoffeeEstateTech</p>
+        </Container>
+      </footer>
+    </div>
   );
 }
 

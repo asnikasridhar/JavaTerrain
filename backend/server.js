@@ -44,10 +44,13 @@ app.post('/login', (req, res) => {
       return res.status(404).json({ message: 'User not found or inactive' });
     }
 
-    const user = results[0];
+    const user = results;
+    let properties = [];
+    results.forEach(e=> properties.push({ property_id: e.property_id, property_name: e.property_name }));
+    console.log(properties);
 
     // Verify password
-    bcrypt.compare(password, user.password, (err, isMatch) => {
+    bcrypt.compare(password, user[0].password, (err, isMatch) => {
       if (err) {
         console.error('Error comparing passwords:', err);
         return res.status(500).json({ error: 'Server error' });
@@ -59,11 +62,12 @@ app.post('/login', (req, res) => {
 
       // If login is successful
       return res.json({
-        user_id: user.user_id,
-        username: user.username,
-        role: user.role,
-        property_id:user.property_id,
-        property_name: user.property_name,
+        user_id: user[0].user_id,
+        user_name: user[0].username,
+        role: user[0].role,
+        property_id:user[0].property_id,
+        property_name: user[0].property_name,
+        all_properties:properties,
         message: 'Login successful'
       });
     });
@@ -425,13 +429,13 @@ app.delete('/labors/:id', (req, res) => {
 
 // Route to add rain details
 app.post('/add-rain', (req, res) => {
-  const { acre_id, date_time, rain_amount, block_id, created_by } = req.body;
+  const { date_time, rain_amount, block_id, created_by } = req.body;
   const created_on = new Date(); // Set the creation date to the current date and time
   const query = `
-    INSERT INTO RainDetails (acre_id, date_time, rain_amount, block_id, created_on, created_by) 
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO RainDetails ( date_time, rain_amount, block_id, created_on, created_by) 
+    VALUES (?, ?, ?, ?, ?)
   `;
-  db.query(query, [acre_id, date_time, rain_amount, block_id, created_on, created_by], (err, result) => {
+  db.query(query, [ date_time, rain_amount, block_id, created_on, created_by], (err, result) => {
     if (err) return res.status(500).send('Error adding rain details.');
     res.send('Rain details added successfully.');
   });
@@ -665,11 +669,11 @@ app.post('/add-plantdetail', (req, res) => {
   const created_on = new Date();
 
   const query = `
-    INSERT INTO plantdetails (acre_id, plant_type, details, block_id, plantdetailscol, created_on, created_by) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO plantdetails (plant_type, details, block_id, created_on, created_by) 
+    VALUES ( ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [acre_id, plant_type, details, block_id, plantdetailscol, created_on, created_by], (err, result) => {
+  db.query(query, [ plant_type, details, block_id,  created_on, created_by], (err, result) => {
     if (err) return res.status(500).send('Error adding plant detail.');
     res.send('Plant detail added successfully.');
   });
@@ -762,17 +766,17 @@ app.delete('/delete-plantdetail/:plant_id', (req, res) => {
 
 // Endpoint to add a new crop detail
 app.post('/add-cropdetail', (req, res) => {
-  const { acre_id, yield_obtained, selling_price, property_id, created_by, other_detail } = req.body;
+  const {  yield_obtained, selling_price, property_id, created_by, other_detail } = req.body;
 
   // Set the current date and time for created_on
   const created_on = new Date();
 
   const query = `
-    INSERT INTO CropDetails (acre_id, yield_obtained, selling_price, property_id, created_on, created_by, other_detail) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO CropDetails ( yield_obtained, selling_price, property_id, created_on, created_by, other_detail) 
+    VALUES ( ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [acre_id, yield_obtained, selling_price, property_id, created_on, created_by, other_detail], (err, result) => {
+  db.query(query, [ yield_obtained, selling_price, property_id, created_on, created_by, other_detail], (err, result) => {
     if (err) return res.status(500).send('Error adding crop detail.');
     res.send('Crop detail added successfully.');
   });
@@ -824,18 +828,18 @@ app.get('/cropdetails/:id', (req, res) => {
 // Endpoint to update a crop detail by crop_id
 app.put('/update-cropdetail/:crop_id', (req, res) => {
   const { crop_id } = req.params;
-  const { acre_id, yield_obtained, selling_price, property_id, modified_by, other_detail } = req.body;
+  const {  yield_obtained, selling_price, property_id, modified_by, other_detail } = req.body;
 
   // Set the current date and time for modified_on
   const modified_on = new Date();
 
   const query = `
     UPDATE CropDetails 
-    SET acre_id = ?, yield_obtained = ?, selling_price = ?, property_id = ?, modified_on = ?, modified_by = ?, other_detail = ?
+    SET  yield_obtained = ?, selling_price = ?, property_id = ?, modified_on = ?, modified_by = ?, other_detail = ?
     WHERE crop_id = ?
   `;
 
-  db.query(query, [acre_id, yield_obtained, selling_price, property_id, modified_on, modified_by, other_detail, crop_id], (err, result) => {
+  db.query(query, [yield_obtained, selling_price, property_id, modified_on, modified_by, other_detail, crop_id], (err, result) => {
     if (err) return res.status(500).send('Error updating crop detail.');
     res.send('Crop detail updated successfully.');
   });
@@ -856,17 +860,17 @@ app.delete('/delete-cropdetail/:crop_id', (req, res) => {
 // Endpoint to add a new expenditure detail
 app.post('/add-expenditure', (req, res) => {
   console.log(req.body);
-  const { acre_id, water, fertilizer, pruning, others, edate, property_id, created_by, fuel } = req.body;
+  const {  water, fertilizer, pruning, others, edate, property_id, created_by, fuel } = req.body;
 
   // Set the current date and time for created_on
   const created_on = new Date();
 
   const query = `
-    INSERT INTO Expenditure (acre_id, water, fertilizer, pruning, others, edate, property_id, created_on, created_by, fuel) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Expenditure ( water, fertilizer, pruning, others, edate, property_id, created_on, created_by, fuel) 
+    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [acre_id, water, fertilizer, pruning, others, edate, property_id, created_on, created_by, fuel], (err, result) => {
+  db.query(query, [ water, fertilizer, pruning, others, edate, property_id, created_on, created_by, fuel], (err, result) => {
     if (err) {
       console.error('Error adding expenditure details:', err);
       res.status(500).send('Error adding expenditure details.');
@@ -930,18 +934,18 @@ app.get('/expendituredetails-by-prop/:property_id/:days', (req, res) => {
 // Endpoint to update an expenditure by expenditure_id
 app.put('/update-expenditure/:expenditure_id', (req, res) => {
   const { expenditure_id } = req.params;
-  const { acre_id, water, fertilizer, pruning, others, edate, property_id, modified_by, fuel } = req.body;
+  const {  water, fertilizer, pruning, others, edate, property_id, modified_by, fuel } = req.body;
 
   // Set the current date and time for modified_on
   const modified_on = new Date();
 
   const query = `
     UPDATE Expenditure 
-    SET acre_id = ?, water = ?, fertilizer = ?, pruning = ?, others = ?, edate = ?, property_id = ?, modified_on = ?, modified_by = ?, fuel = ?
+    SET  water = ?, fertilizer = ?, pruning = ?, others = ?, edate = ?, property_id = ?, modified_on = ?, modified_by = ?, fuel = ?
     WHERE expenditure_id = ?
   `;
 
-  db.query(query, [acre_id, water, fertilizer, pruning, others, edate, property_id, modified_on, modified_by, fuel, expenditure_id], (err, result) => {
+  db.query(query, [ water, fertilizer, pruning, others, edate, property_id, modified_on, modified_by, fuel, expenditure_id], (err, result) => {
     if (err) return res.status(500).send('Error updating expenditure.');
     res.send('Expenditure updated successfully.');
   });
@@ -965,13 +969,13 @@ app.delete('/delete-expenditure/:expenditure_id', (req, res) => {
 
 // Endpoint to add a new fertilizer
 app.post('/add-fertilizer', (req, res) => {
-  const { acre_id, fertilizer_name, date_of_application, property_id, created_by, other_details } = req.body;
+  const {  fertilizer_name, date_of_application, property_id, created_by, other_details } = req.body;
   const created_on = new Date(); // Set the creation date to the current date and time
   const query = `
-    INSERT INTO Fertilizers (acre_id, fertilizer_name, date_of_application, property_id, created_on, created_by, other_details) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Fertilizers ( fertilizer_name, date_of_application, property_id, created_on, created_by, other_details) 
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [acre_id, fertilizer_name, date_of_application, property_id, created_on, created_by, other_details], (err, result) => {
+  db.query(query, [ fertilizer_name, date_of_application, property_id, created_on, created_by, other_details], (err, result) => {
     if (err) return res.status(500).send('Error adding fertilizer.');
     res.send('Fertilizer added successfully.');
   });
@@ -980,7 +984,7 @@ app.post('/add-fertilizer', (req, res) => {
 // Endpoint to get all fertilizers
 app.get('/fertilizers', (req, res) => {
   const query = `
-    SELECT fertilizer_id, acre_id, fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 
+    SELECT fertilizer_id,  fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 
     FROM Fertilizers
   `;
   db.query(query, (err, results) => {
@@ -993,7 +997,7 @@ app.get('/fertilizers', (req, res) => {
 app.get('/fertilizerdetails/:id', (req, res) => {
   const fertilizer_id = parseInt(req.params.id, 10);
   const query = `
-    SELECT fertilizer_id, acre_id, fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 
+    SELECT fertilizer_id,  fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 
     FROM Fertilizers 
     WHERE fertilizer_id = ?
   `;
@@ -1035,20 +1039,20 @@ app.get('/fertilizers-by-prop/:property_id/:days', (req, res) => {
 // Endpoint to update a fertilizer by fertilizer_id
 app.put('/update-fertilizer/:fertilizer_id', (req, res) => {
   const { fertilizer_id } = req.params;
-  const { acre_id, fertilizer_name, date_of_application, property_id, modified_by, other_details } = req.body;
+  const {  fertilizer_name, date_of_application, property_id, modified_by, other_details } = req.body;
   const modified_on = new Date(); // Set the modification date to the current date and time
 
   // SQL query to update the fertilizer
   const query = `
     UPDATE Fertilizers 
-    SET acre_id = ?, fertilizer_name = ?, date_of_application = ?, property_id = ?, modified_on = ?, modified_by = ?, other_details = ?
+    SET  fertilizer_name = ?, date_of_application = ?, property_id = ?, modified_on = ?, modified_by = ?, other_details = ?
     WHERE fertilizer_id = ?
   `;
 
   // Execute the query
   db.query(
     query,
-    [acre_id, fertilizer_name, date_of_application, property_id, modified_on, modified_by, other_details, fertilizer_id],
+    [ fertilizer_name, date_of_application, property_id, modified_on, modified_by, other_details, fertilizer_id],
     (err, result) => {
       if (err) {
         console.error('Error updating fertilizer:', err);
