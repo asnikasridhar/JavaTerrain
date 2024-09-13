@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -15,6 +15,23 @@ function AddLabor() {
     emergency_details: ''
   });
 
+  const [users, setUsers] = useState([]);
+  const [selectedProperty, setSelectedProperty] = useState(localStorage.getItem('selProperty') || '');
+  const [propertyId, setPropertyId] = useState(localStorage.getItem('selPropertyId') || ''); // Assuming property ID is stored in local storage
+
+  // Fetch users based on selected property
+  useEffect(() => {
+    if (selectedProperty) {
+      axios.get(`http://localhost:3000/users-by-property-id/${selectedProperty}`)
+        .then(response => {
+          setUsers(response.data); // Set the list of users
+        })
+        .catch(error => {
+          console.error('Error fetching users:', error);
+        });
+    }
+  }, [selectedProperty]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLaborData({
@@ -25,7 +42,13 @@ function AddLabor() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-labor', laborData)
+    console.log("Property: " +selectedProperty);
+    const finalLaborData = {
+      ...laborData,
+      property_id: selectedProperty // Include property_id in the data sent to the backend
+    };
+
+    axios.post('http://localhost:3000/add-labor', finalLaborData)
       .then(response => {
         alert('Labor added successfully!');
       })
@@ -39,18 +62,25 @@ function AddLabor() {
       <h2 className="text-center mb-4">Add New Labor</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="user_id" className="form-label">User ID</label>
-          <input
-            type="text"
+          <label htmlFor="user_id" className="form-label">Select User</label>
+          <select
             id="user_id"
             name="user_id"
             value={laborData.user_id}
             onChange={handleChange}
             className="form-control"
-            placeholder="User ID"
             required
-          />
+          >
+            <option value="">Select User</option>
+            {users.map(user => (
+              <option key={user.user_id} value={user.user_id}>
+                {user.username}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {/* Other input fields */}
         <div className="mb-3">
           <label htmlFor="name" className="form-label">Name</label>
           <input

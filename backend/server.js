@@ -133,6 +133,36 @@ app.get('/users/:id', (req, res) => {
   });
 });
 
+
+// GET users based on property ID
+app.get('/users-by-property-id/:propertyId', (req, res) => {
+  const { propertyId } = req.params;
+
+  if (!propertyId) {
+    return res.status(400).json({ error: 'Property ID is required' });
+  }
+
+  // Query to fetch users based on property_id
+  const getUsersQuery = `
+    SELECT u.user_id, u.username 
+    FROM users u
+    INNER JOIN propertyuser pu ON u.user_id = pu.user_id
+    WHERE pu.property_id = ?;
+  `;
+
+  db.query(getUsersQuery, [propertyId], (err, usersResult) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error while fetching users' });
+    }
+
+    if (usersResult.length === 0) {
+      return res.status(404).json({ message: 'No users found for this property' });
+    }
+
+    res.json(usersResult);
+  });
+});
+
 // Endpoint to update user details by user_id
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
@@ -284,17 +314,41 @@ app.delete('/delete-acre/:id', (req, res) => {
 
 // Route to add a new labor
 app.post('/add-labor', (req, res) => {
-  const { user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_by } = req.body;
+  const { user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_by, property_id } = req.body;
   const created_on = new Date(); // Set the creation date to the current date and time
-  const query = `
+
+  // Insert into Labors table
+  const laborQuery = `
     INSERT INTO Labors (user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  db.query(query, [user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by], (err, result) => {
-    if (err) return res.status(500).send('Error adding labor.');
-    res.send('Labor added successfully');
+
+  // Execute the labor insertion
+  db.query(laborQuery, [user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by], (err, laborResult) => {
+    if (err) {
+      console.error('Error inserting labor:', err);
+      return res.status(500).send('Error adding labor.');
+    }
+
+    const labor_id = laborResult.insertId; // Get the inserted labor_id
+
+    // Insert into propertylabor table
+    const propertyLaborQuery = `
+      INSERT INTO propertylabor (property_id, labor_id)
+      VALUES (?, ?)
+    `;
+
+    db.query(propertyLaborQuery, [property_id, labor_id], (err, propertyLaborResult) => { 
+      if (err) {
+        console.error('Error inserting into propertylabor:', err);
+        return res.status(500).send('Error linking labor with property.');
+      }
+
+      res.send('Labor added and linked with property successfully');
+    });
   });
 });
+
 
 // Endpoint to get all labor details
 app.get('/labors', (req, res) => {
@@ -320,7 +374,7 @@ app.get('/labors-prop/:property_id', (req, res) => {
     SELECT l.labor_id, l.user_id, l.name, l.age, l.adhar_card, l.bank_details, l.health_history, l.photo, l.address, l.emergency_details, l.created_on, l.created_by, l.modified_on, l.modified_by
     FROM Labors l
     JOIN propertylabor pl ON l.labor_id = pl.labor_id
-    WHERE pl.proper_id = ?
+    WHERE pl.property_id = ?
   `;
 
   db.query(query, [propertyId], (err, results) => {
