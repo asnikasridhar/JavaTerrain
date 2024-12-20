@@ -11,7 +11,7 @@ const ViewExpenditureDetails = () => {
 
   // Fetch data whenever `selProperty` or `days` changes
   useEffect(() => {
-    axios.get(`http://localhost:3000/expendituredetails-by-prop/${selProperty}/${days}`)
+    axios.get(`https://javaterrain.onrender.com/expendituredetails-by-prop/${selProperty}/${days}`)
       .then(response => {
         setExpenditureDetails(response.data);
       })
@@ -26,7 +26,7 @@ const ViewExpenditureDetails = () => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this expenditure detail?')) {
-      axios.delete(`http://localhost:3000/delete-expenditure/${id}`)
+      axios.delete(`https://javaterrain.onrender.com/delete-expenditure/${id}`)
         .then(() => {
           setExpenditureDetails(expenditureDetails.filter(expenditure => expenditure.expenditure_id !== id));
         })

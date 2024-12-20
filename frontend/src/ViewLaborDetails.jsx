@@ -10,7 +10,7 @@ const ViewLaborDetails = () => {
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/labors-prop/${selProperty}`)
+    axios.get(`https://javaterrain.onrender.com/labors-prop/${selProperty}`)
       .then(response => {
         setLaborDetails(response.data);
       })
@@ -21,7 +21,7 @@ const ViewLaborDetails = () => {
   }, []);
 
   const handleDelete = (laborId) => {
-    axios.delete(`http://localhost:3000/labors/${laborId}`)
+    axios.delete(`https://javaterrain.onrender.com/labors/${laborId}`)
       .then(() => {
         setLaborDetails(laborDetails.filter(laborDetail => laborDetail.labor_id !== laborId));
       })

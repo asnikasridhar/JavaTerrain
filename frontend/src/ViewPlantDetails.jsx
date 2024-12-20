@@ -9,7 +9,7 @@ const ViewPlantDetails = () => {
   const [error, setError] = useState(null);
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
   useEffect(() => {
-    axios.get(`http://localhost:3000/plantdetails-by-prop/${selProperty}`)
+    axios.get(`https://javaterrain.onrender.com/plantdetails-by-prop/${selProperty}`)
       .then(response => {
         setPlantDetails(response.data);
       })
@@ -20,7 +20,7 @@ const ViewPlantDetails = () => {
   }, []);
 
   const handleDelete = (plantId) => {
-    axios.delete(`http://localhost:3000/plantdetails/${plantId}`)
+    axios.delete(`https://javaterrain.onrender.com/plantdetails/${plantId}`)
       .then(() => {
         setPlantDetails(plantDetails.filter(plantDetail => plantDetail.plant_id !== plantId));
       })

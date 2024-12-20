@@ -19,7 +19,7 @@ function AddFertilizers() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-fertilizer', fertilizerData)
+    axios.post('https://javaterrain.onrender.com/add-fertilizer', fertilizerData)
       .then(response => {
         alert('Fertilizer details added successfully!');
       })

@@ -18,7 +18,7 @@ const EditPlant = () => {
 
   useEffect(() => {
     // Fetch the existing plant details
-    axios.get(`http://localhost:3000/plantdetails/${id}`)
+    axios.get(`https://javaterrain.onrender.com/plantdetails/${id}`)
       .then(response => {
         setPlantDetail(response.data);
         setLoading(false);
@@ -39,7 +39,7 @@ const EditPlant = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/update-plantdetail/${id}`, plantDetail)
+    axios.put(`https://javaterrain.onrender.com/update-plantdetail/${id}`, plantDetail)
       .then(() => {
         navigate('/view-plantdetails'); // Redirect to the view page after successful update
       })

@@ -13,7 +13,7 @@ const  ViewPropertyDetails=()=> {
     console.log("Im called" + userId)
     if (userId) {
       axios
-        .get(`http://localhost:3000/properties/${userId}`)
+        .get(`https://javaterrain.onrender.com/properties/${userId}`)
         .then((response) => {
           setProperties(response.data);
         })
@@ -31,7 +31,7 @@ const  ViewPropertyDetails=()=> {
 
   const handleDelete = (propertyId) => {
     axios
-      .delete(`http://localhost:3000/delete-property/${propertyId}`)
+      .delete(`https://javaterrain.onrender.com/delete-property/${propertyId}`)
       .then((response) => {
         console.log('Property deleted successfully');
         setProperties(properties.filter((property) => property.property_id !== propertyId));

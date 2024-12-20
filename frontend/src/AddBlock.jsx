@@ -19,7 +19,7 @@ function AddBlock() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/addblock', blockData)
+    axios.post('https://javaterrain.onrender.com/addblock', blockData)
       .then(response => {
         alert('Block added successfully!');
       })

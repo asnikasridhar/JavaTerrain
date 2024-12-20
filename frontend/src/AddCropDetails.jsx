@@ -19,7 +19,7 @@ function AddCropDetails() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-cropdetail', cropData)
+    axios.post('https://javaterrain.onrender.com/add-cropdetail', cropData)
       .then(response => {
         alert('Crop details added successfully!');
       })

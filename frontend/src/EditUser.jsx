@@ -18,7 +18,7 @@ const EditUser = () => {
 
   useEffect(() => {
     // Fetch the existing user details
-    axios.get(`http://localhost:3000/users/${id}`)
+    axios.get(`https://javaterrain.onrender.com/users/${id}`)
       .then(response => {
         setUserDetail(response.data);
         setLoading(false);
@@ -39,7 +39,7 @@ const EditUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/users/${id}`, userDetail)
+    axios.put(`https://javaterrain.onrender.com/users/${id}`, userDetail)
       .then(() => {
         navigate('/view-userdetails'); // Redirect to the view page after successful update
       })

@@ -22,7 +22,7 @@ function AddAcre() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-acre', acreData)
+    axios.post('https://javaterrain.onrender.com/add-acre', acreData)
       .then(response => {
         alert('Acre added successfully!');
       })

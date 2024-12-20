@@ -17,7 +17,7 @@ const EditCropDetail = () => {
 
   useEffect(() => {
     // Fetch the existing crop details
-    axios.get(`http://localhost:3000/cropdetails/${id}`)
+    axios.get(`https://javaterrain.onrender.com/cropdetails/${id}`)
       .then(response => {
         setCropDetail(response.data);
         setLoading(false);
@@ -38,7 +38,7 @@ const EditCropDetail = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/update-cropdetail/${id}`, cropDetail)
+    axios.put(`https://javaterrain.onrender.com/update-cropdetail/${id}`, cropDetail)
       .then(() => {
         navigate('/view-cropdetails'); // Redirect to the view page after successful update
       })
