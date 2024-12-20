@@ -11,10 +11,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'coffee_estate'
+  host: 'sql12.freesqldatabase.com',
+  user: 'sql12753161',
+  password: 'xKYeT469C3',
+  database: 'sql12753161'
 });
 
 db.connect(err => {
@@ -34,6 +34,8 @@ app.post('/login', (req, res) => {
   const query = `SELECT u.*, p.property_id, p.property_name FROM users u inner join propertyuser pu on u.user_id = pu.user_id 
                 inner join property p on p.property_id = pu.property_id
                 where email = ? AND is_active = 1`;
+
+  console.log("Im here")
   db.query(query, [email], (err, results) => {
     if (err) {
       console.error('Error retrieving user details:', err);
@@ -41,6 +43,7 @@ app.post('/login', (req, res) => {
     }
 
     if (results.length === 0) {
+      console.log("Im here, inactive")
       return res.status(404).json({ message: 'User not found or inactive' });
     }
 
@@ -48,7 +51,15 @@ app.post('/login', (req, res) => {
     let properties = [];
     results.forEach(e=> properties.push({ property_id: e.property_id, property_name: e.property_name }));
     console.log(properties);
-
+    return res.json({
+      user_id: user[0].user_id,
+      user_name: user[0].username,
+      role: user[0].role,
+      property_id:user[0].property_id,
+      property_name: user[0].property_name,
+      all_properties:properties,
+      message: 'Login successful'
+    });
     // Verify password
     bcrypt.compare(password, user[0].password, (err, isMatch) => {
       if (err) {
