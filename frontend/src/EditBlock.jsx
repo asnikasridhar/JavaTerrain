@@ -17,7 +17,7 @@ const EditBlock = () => {
 
   useEffect(() => {
     // Fetch the existing block details
-    axios.get(`https://javaterrain.onrender.com/blockdetails/${id}`)
+    axios.get(`http://localhost:3000/blockdetails/${id}`)
       .then(response => {
         setBlockDetail(response.data);
         setLoading(false);
@@ -38,7 +38,7 @@ const EditBlock = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://javaterrain.onrender.com/updateblock/${id}`, blockDetail)
+    axios.put(`http://localhost:3000/updateblock/${id}`, blockDetail)
       .then(() => {
         navigate('/view-blocks'); // Redirect to the view page after successful update
       })

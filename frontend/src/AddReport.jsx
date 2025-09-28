@@ -20,7 +20,7 @@ function AddReport() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('https://javaterrain.onrender.com/add-report', reportData)
+    axios.post('http://localhost:3000/add-report', reportData)
       .then(response => {
         alert('Report added successfully!');
       })

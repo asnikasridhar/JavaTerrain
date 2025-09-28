@@ -10,7 +10,7 @@ const ViewFertilizerDetails = () => {
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/fertilizers-by-prop/${selProperty}/${days}`)
+    axios.get(`http://localhost:3000/fertilizers-by-prop/${selProperty}/${days}`)
       .then(response => {
         setFertilizerDetails(response.data);
       })
@@ -25,7 +25,7 @@ const ViewFertilizerDetails = () => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this fertilizer detail?')) {
-      axios.delete(`https://javaterrain.onrender.com/delete-fertilizer/${id}`)
+      axios.delete(`http://localhost:3000/delete-fertilizer/${id}`)
         .then(() => {
           setFertilizerDetails(fertilizerDetails.filter(fertilizer => fertilizer.fertilizer_id !== id));
         })

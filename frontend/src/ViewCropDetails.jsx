@@ -9,7 +9,7 @@ const ViewCropDetails = () => {
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/cropdetails-by-prop/${selProperty}`)
+    axios.get(`http://localhost:3000/cropdetails-by-prop/${selProperty}`)
       .then(response => {
         setCropDetails(response.data);
       })
@@ -24,7 +24,7 @@ const ViewCropDetails = () => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this crop detail?')) {
-      axios.delete(`https://javaterrain.onrender.com/delete-cropdetail/${id}`)
+      axios.delete(`http://localhost:3000/delete-cropdetail/${id}`)
         .then(() => {
           setCropDetails(cropDetails.filter(crop => crop.crop_id !== id));
         })

@@ -11,7 +11,7 @@ const ViewBlock = () => {
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/blocks-by-prop/${selProperty}`)
+    axios.get(`http://localhost:3000/blocks-by-prop/${selProperty}`)
       .then(response => {
         setBlockDetails(response.data);
         setLoading(false);
@@ -23,7 +23,7 @@ const ViewBlock = () => {
   }, []);
 
   const handleDelete = (blockId) => {
-    axios.delete(`https://javaterrain.onrender.com/deleteblock/${blockId}`)
+    axios.delete(`http://localhost:3000/deleteblock/${blockId}`)
       .then(() => {
         // Refresh the list after deletion
         setBlockDetails(blockDetails.filter(blockDetail => blockDetail.block_id !== blockId));

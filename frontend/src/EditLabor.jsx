@@ -23,7 +23,7 @@ const EditLabor = () => {
 
   useEffect(() => {
     // Fetch the existing labor details by ID
-    axios.get(`https://javaterrain.onrender.com/labor/${id}`)
+    axios.get(`http://localhost:3000/labor/${id}`)
       .then(response => {
         setLaborDetail(response.data);
         setLoading(false);
@@ -44,7 +44,7 @@ const EditLabor = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://javaterrain.onrender.com/labors/${id}`, laborDetail)
+    axios.put(`http://localhost:3000/labors/${id}`, laborDetail)
       .then(() => {
         navigate('/view-labordetails'); // Redirect to the view page after successful update
       })

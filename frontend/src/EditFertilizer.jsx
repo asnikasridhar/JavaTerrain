@@ -18,7 +18,7 @@ const EditFertilizer = () => {
 
   useEffect(() => {
     // Fetch the existing fertilizer details
-    axios.get(`https://javaterrain.onrender.com/fertilizerdetails/${fertilizer_id}`)
+    axios.get(`http://localhost:3000/fertilizerdetails/${fertilizer_id}`)
       .then(response => {
         setFertilizerDetail(response.data);
         setLoading(false);
@@ -39,7 +39,7 @@ const EditFertilizer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://javaterrain.onrender.com/update-fertilizer/${fertilizer_id}`, fertilizerDetail)
+    axios.put(`http://localhost:3000/update-fertilizer/${fertilizer_id}`, fertilizerDetail)
       .then(() => {
         navigate('/view-fertilizerdetails'); // Redirect to the view page after successful update
       })

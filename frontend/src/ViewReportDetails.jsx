@@ -18,7 +18,7 @@ const ViewReportDetails = () => {
   const [reportDetails, setReportDetails] = useState([]);
 
   useEffect(() => {
-    axios.get('https://javaterrain.onrender.com/reportdetails')
+    axios.get('http://localhost:3000/reportdetails')
       .then(response => {
         setReportDetails(response.data);
       })

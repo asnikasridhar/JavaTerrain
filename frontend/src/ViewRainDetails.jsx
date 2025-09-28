@@ -8,7 +8,7 @@ const ViewRainDetails = () => {
   const navigate = useNavigate();
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/raindetails-prop/${selProperty}`)
+    axios.get(`http://localhost:3000/raindetails-prop/${selProperty}`)
       .then(response => {
         setRainDetails(response.data);
       })
@@ -23,7 +23,7 @@ const ViewRainDetails = () => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this rain detail?')) {
-      axios.delete(`https://javaterrain.onrender.com/delete-rain/${id}`)
+      axios.delete(`http://localhost:3000/delete-rain/${id}`)
         .then(() => {
           setRainDetails(rainDetails.filter(rain => rain.rain_id !== id));
         })

@@ -20,7 +20,7 @@ function AddUser() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('https://javaterrain.onrender.com/add-user', userData)
+    axios.post('http://localhost:3000/add-user', userData)
       .then(response => {
         alert('User added successfully!');
       })

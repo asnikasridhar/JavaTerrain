@@ -22,7 +22,7 @@ function AddExpenditure() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('https://javaterrain.onrender.com/add-expenditure', expenditureData)
+    axios.post('http://localhost:3000/add-expenditure', expenditureData)
       .then(response => {
         alert('Expenditure details added successfully!');
       })

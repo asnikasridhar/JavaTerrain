@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    axios.post('https://javaterrain.onrender.com/login', {
+    axios.post('http://localhost:3000/login', {
       email,
       password,
     })

@@ -30,7 +30,7 @@ function AddProperty() {
       return;
     }
 
-    axios.post('https://javaterrain.onrender.com/add-property-for-user', { user_id, ...propertyDetails })
+    axios.post('http://localhost:3000/add-property-for-user', { user_id, ...propertyDetails })
       .then((response) => {
         setMessage('Property added successfully!');
         setPropertyDetails({

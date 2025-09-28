@@ -11,10 +11,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-  host: 'sql12.freesqldatabase.com',
-  user: 'sql12753161',
-  password: 'xKYeT469C3',
-  database: 'sql12753161'
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'coffee_estate'
 });
 
 db.connect(err => {
@@ -831,21 +831,38 @@ app.delete('/delete-plantdetail/:plant_id', (req, res) => {
 
 // Endpoint to add a new crop detail
 app.post('/add-cropdetail', (req, res) => {
-  const {  yield_obtained, selling_price, property_id, created_by, other_detail } = req.body;
+  const { crop_id, yield_obtained, selling_price, property_id } = req.body;
+  const income = yield_obtained * selling_price;
 
-  // Set the current date and time for created_on
-  const created_on = new Date();
-
-  const query = `
-    INSERT INTO CropDetails ( yield_obtained, selling_price, property_id, created_on, created_by, other_detail) 
-    VALUES ( ?, ?, ?, ?, ?, ?)
+  const insertCrop = `
+    INSERT INTO cropdetails (crop_id, yield_obtained, selling_price, property_id)
+    VALUES (?, ?, ?, ?)
   `;
 
-  db.query(query, [ yield_obtained, selling_price, property_id, created_on, created_by, other_detail], (err, result) => {
-    if (err) return res.status(500).send('Error adding crop detail.');
-    res.send('Crop detail added successfully.');
+  db.query(insertCrop, [crop_id, yield_obtained, selling_price, property_id], (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error inserting crop' });
+
+    const cropId = result.insertId;
+    const received_date = new Date();
+
+    const insertIncome = `
+      INSERT INTO crop_income (
+    crop_id,
+    income_amount,
+    received_date,
+    created_by,
+    created_date
+  ) VALUES (?, ?, ?, ?, ?)
+`;
+
+    db.query(insertIncome, [cropId, income,received_date, 'system',received_date ], (err2) => {
+      if (err2) return res.status(500).json({ error: 'Error inserting income' });
+
+      res.json({ message: 'Crop and income added successfully' });
+    });
   });
 });
+
 
 // Endpoint to get all crop details
 app.get('/cropdetails', (req, res) => {
@@ -858,21 +875,33 @@ app.get('/cropdetails', (req, res) => {
 
 
 // Endpoint to get crop details by crop_id
-app.get('/cropdetails-by-prop/:id', (req, res) => {
-  const { id } = req.params;
-  const query = 'select c.*, p.property_name  from cropdetails c inner join property p on c.property_id = p.property_id WHERE c.property_id = ?';
+app.get('/cropdetails-by-prop/:propertyId', (req, res) => {
+  const propId = req.params.propertyId;
 
-  db.query(query, [id], (err, results) => {
+  const query = `
+    SELECT 
+      cd.crop_id,
+      cd.property_id,
+      p.property_name,
+      cd.yield_obtained,
+      cd.selling_price,
+      ci.income_amount AS income
+    FROM cropdetails cd
+    LEFT JOIN crop_income ci ON cd.crop_id = ci.crop_id
+    inner join property p on p.property_id = cd.property_id
+    WHERE cd.property_id = ?
+  `;
+
+  db.query(query, [propId], (err, results) => {
     if (err) {
-      console.error('Error retrieving crop details by ID:', err);
-      return res.status(500).json({ error: 'Failed to retrieve crop details' });
+      console.error('Error fetching crop details:', err);
+      return res.status(500).json({ error: 'Database error' });
     }
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'Crop not found' });
-    }
+
     res.json(results);
   });
 });
+
 // Endpoint to get crop details by crop_id
 app.get('/cropdetails/:id', (req, res) => {
   const { id } = req.params;

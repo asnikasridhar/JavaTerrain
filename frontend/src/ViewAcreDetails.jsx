@@ -12,7 +12,7 @@ const ViewAcreDetails = () => {
   const userId = userDetails?.userId;
 
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/acredetailsbyuserid/${userId}`)
+    axios.get(`http://localhost:3000/acredetailsbyuserid/${userId}`)
       .then(response => {
         setAcreDetails(response.data);
         setLoading(false);
@@ -24,7 +24,7 @@ const ViewAcreDetails = () => {
   }, []);
 
   const handleDelete = (acreId) => {
-    axios.delete(`https://javaterrain.onrender.com/delete-acre/${acreId}`)
+    axios.delete(`http://localhost:3000/delete-acre/${acreId}`)
       .then(() => {
         // Refresh the list after deletion
         setAcreDetails(acreDetails.filter(acreDetail => acreDetail.acre_id !== acreId));

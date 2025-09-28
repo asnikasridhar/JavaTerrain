@@ -37,6 +37,8 @@ import AddBlock from './AddBlock';
 import EditBlock from './EditBlock';
 import ViewBlock from './ViewBlock';
 import Login  from './Login';
+import Income from './Income';
+import RainReport from './RainReport';
 // import other components
 
 function App() {
@@ -89,6 +91,7 @@ function App() {
                     <Dropdown.Item as={Link} to="/view-reportdetails">View Report Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-property">View Property Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-block">View Block Details</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/view-income">View</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>
@@ -145,9 +148,13 @@ function App() {
             <Route path="/view-property" element={<ViewPropertyDetails />} />
             <Route path="/edit-property/:id" element={<EditProperty />} />
 
+            <Route path="/view-income" element={<Income />} />
+
             <Route path="/add-block" element={<AddBlock />} />
             <Route path="/view-block" element={<ViewBlock />} />
             <Route path="/edit-block/:id" element={<EditBlock />} />
+
+             <Route path="/rain-report" element={<RainReport />} />
             {/* Redirect all unknown routes to Home */}
             <Route path="*" element={<Navigate to="/" replace />} />
 

@@ -15,7 +15,7 @@ const EditRain = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://javaterrain.onrender.com/raindetails/${id}`)
+    axios.get(`http://localhost:3000/raindetails/${id}`)
       .then(response => {
         setRainDetail(response.data);
         setLoading(false);
@@ -36,7 +36,7 @@ const EditRain = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://javaterrain.onrender.com/update-rain/${id}`, rainDetail)
+    axios.put(`http://localhost:3000/update-rain/${id}`, rainDetail)
       .then(() => {
         navigate('/view-raindetails');
       })
