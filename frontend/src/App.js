@@ -92,6 +92,7 @@ function App() {
                     <Dropdown.Item as={Link} to="/view-property">View Property Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-block">View Block Details</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/view-income">View</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/rain-report">View Rain Report</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>

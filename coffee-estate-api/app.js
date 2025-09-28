@@ -31,7 +31,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/plants', plantRoutes);
 app.use('/api/crops', cropRoutes);
 app.use('/api/expenditures', expenditureRoutes);
-app.use('/api/rain-report', rainReportRoutes);
+app.use('/api/', rainReportRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

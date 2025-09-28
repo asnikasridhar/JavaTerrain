@@ -1,7 +1,6 @@
 const db = require('../config/db');
 
 class RainReport {
-
   // Generate Rain Report
   static async generate(filters = {}) {
     const { startDate, endDate, propertyId, blockId } = filters;
@@ -58,13 +57,36 @@ class RainReport {
       ORDER BY DATE(r.date_time) ASC
     `, params);
 
+    // Weekly rainfall
+    const [weeklyRainfall] = await db.execute(`
+      SELECT YEAR(r.date_time) AS year, WEEK(r.date_time, 1) AS week, SUM(r.rain_amount) AS total_rain
+      FROM RainDetails r
+      INNER JOIN blocks b ON r.block_id = b.block_id
+      INNER JOIN property p ON b.property_id = p.property_id
+      ${whereClause}
+      GROUP BY YEAR(r.date_time), WEEK(r.date_time, 1)
+      ORDER BY year ASC, week ASC
+    `, params);
+
+    // Monthly rainfall
+    const [monthlyRainfall] = await db.execute(`
+      SELECT YEAR(r.date_time) AS year, MONTH(r.date_time) AS month, SUM(r.rain_amount) AS total_rain
+      FROM RainDetails r
+      INNER JOIN blocks b ON r.block_id = b.block_id
+      INNER JOIN property p ON b.property_id = p.property_id
+      ${whereClause}
+      GROUP BY YEAR(r.date_time), MONTH(r.date_time)
+      ORDER BY year ASC, month ASC
+    `, params);
+
     return {
-      totalRainfall: totalRainfall[0].total_rainfall || 0,
+      totalRainfall: totalRainfall[0]?.total_rainfall || 0,
       rainfallByBlock,
-      dailyRainfall
+      dailyRainfall,
+      weeklyRainfall,
+      monthlyRainfall
     };
   }
-
 }
 
 module.exports = RainReport;

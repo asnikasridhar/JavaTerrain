@@ -21,10 +21,12 @@ const RainReport = () => {
   const [filters, setFilters] = useState({ startDate: '', endDate: '', propertyId: '' });
   const [activeTab, setActiveTab] = useState('daily'); // daily | weekly | monthly | block
 
+  // Fetch JSON report
   const fetchReport = async () => {
     setLoading(true);
     try {
       const response = await axios.get('http://localhost:3000/api/rain-report', { params: filters });
+      console.log('API Response:', response.data.data); // debug
       setReport(response.data.data);
     } catch (error) {
       console.error('Error fetching report:', error);
@@ -32,12 +34,15 @@ const RainReport = () => {
     setLoading(false);
   };
 
+  // Download report in CSV/Excel/JSON
   const downloadReport = (format) => {
     const query = new URLSearchParams({ ...filters, format }).toString();
-    window.open(`/api/rain-report?${query}`, '_blank');
+    // Full backend URL to trigger download
+    window.open(`http://localhost:3000/api/rain-report?${query}`, '_blank');
   };
 
-  const getChartData = (dataArray, labelKey, valueKey) => ({
+  // Prepare chart data
+  const getChartData = (dataArray = [], labelKey, valueKey) => ({
     labels: dataArray.map(item => item[labelKey]),
     datasets: [
       {
@@ -55,7 +60,8 @@ const RainReport = () => {
     ]
   });
 
-  const renderTable = (dataArray, columns, valueKey) => (
+  // Render data table
+  const renderTable = (dataArray = [], columns, valueKey) => (
     <table style={styles.table}>
       <thead>
         <tr>
@@ -68,7 +74,17 @@ const RainReport = () => {
             {columns.map(col => {
               const cellValue = row[col.key];
               const isHeavy = col.key === valueKey && parseFloat(cellValue) > HEAVY_RAIN_THRESHOLD;
-              return <td key={col.key} style={{ ...styles.td, backgroundColor: isHeavy ? '#FFCDD2' : 'transparent' }}>{cellValue}</td>;
+              return (
+                <td
+                  key={col.key}
+                  style={{
+                    ...styles.td,
+                    backgroundColor: isHeavy ? '#FFCDD2' : 'transparent'
+                  }}
+                >
+                  {cellValue}
+                </td>
+              );
             })}
           </tr>
         ))}
@@ -76,22 +92,23 @@ const RainReport = () => {
     </table>
   );
 
+  // Tab content (daily/weekly/monthly/block)
   const renderTabContent = () => {
     if (!report) return null;
 
     switch (activeTab) {
       case 'daily':
         return <>
-          <Line data={getChartData(report.dailyRainfall, 'date', 'total_rain')} />
-          {renderTable(report.dailyRainfall, [
+          <Line data={getChartData(report.dailyRainfall || [], 'date', 'total_rain')} />
+          {renderTable(report.dailyRainfall || [], [
             { header: 'Date', key: 'date' },
             { header: 'Total Rain', key: 'total_rain' }
           ], 'total_rain')}
         </>;
       case 'weekly':
         return <>
-          <Line data={getChartData(report.weeklyRainfall, 'week', 'total_rain')} />
-          {renderTable(report.weeklyRainfall, [
+          <Line data={getChartData(report.weeklyRainfall || [], 'week', 'total_rain')} />
+          {renderTable(report.weeklyRainfall || [], [
             { header: 'Year', key: 'year' },
             { header: 'Week', key: 'week' },
             { header: 'Total Rain', key: 'total_rain' }
@@ -99,8 +116,8 @@ const RainReport = () => {
         </>;
       case 'monthly':
         return <>
-          <Line data={getChartData(report.monthlyRainfall, 'month', 'total_rain')} />
-          {renderTable(report.monthlyRainfall, [
+          <Line data={getChartData(report.monthlyRainfall || [], 'month', 'total_rain')} />
+          {renderTable(report.monthlyRainfall || [], [
             { header: 'Year', key: 'year' },
             { header: 'Month', key: 'month' },
             { header: 'Total Rain', key: 'total_rain' }
@@ -108,8 +125,8 @@ const RainReport = () => {
         </>;
       case 'block':
         return <>
-          <Line data={getChartData(report.rainfallByBlock, 'block_name', 'total_rainfall')} />
-          {renderTable(report.rainfallByBlock, [
+          <Line data={getChartData(report.rainfallByBlock || [], 'block_name', 'total_rainfall')} />
+          {renderTable(report.rainfallByBlock || [], [
             { header: 'Block Name', key: 'block_name' },
             { header: 'Total Rainfall', key: 'total_rainfall' }
           ], 'total_rainfall')}
@@ -158,7 +175,7 @@ const RainReport = () => {
 
       {report && (
         <>
-          <h3 style={{ marginTop: 20 }}>Total Rainfall: {report.totalRainfall} mm</h3>
+          <h3 style={{ marginTop: 20 }}>Total Rainfall: {report.totalRainfall || 0} mm</h3>
 
           {/* Tabs */}
           <div style={styles.tabsContainer}>
@@ -183,19 +200,49 @@ const RainReport = () => {
   );
 };
 
-// Styles
+// Inline styles
 const styles = {
   container: { padding: 20, maxWidth: 1200, margin: '0 auto' },
   title: { textAlign: 'center', marginBottom: 20 },
   filterContainer: { display: 'flex', flexWrap: 'wrap', marginBottom: 20 },
   input: { padding: 8, fontSize: 14 },
-  fetchButton: { marginLeft: 10, padding: '8px 16px', backgroundColor: '#2196F3', color: '#fff', border: 'none', cursor: 'pointer', borderRadius: 4 },
+  fetchButton: {
+    marginLeft: 10,
+    padding: '8px 16px',
+    backgroundColor: '#2196F3',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    borderRadius: 4
+  },
   downloadContainer: { marginBottom: 20 },
-  downloadButton: { padding: '6px 12px', backgroundColor: '#4CAF50', color: '#fff', border: 'none', cursor: 'pointer', borderRadius: 4 },
+  downloadButton: {
+    padding: '6px 12px',
+    backgroundColor: '#4CAF50',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    borderRadius: 4
+  },
   tabsContainer: { display: 'flex', marginBottom: 10, flexWrap: 'wrap' },
-  tabButton: { flex: 1, padding: '10px 20px', cursor: 'pointer', border: '1px solid #ccc', borderBottom: 'none', backgroundColor: '#f1f1f1', fontWeight: 'bold', marginRight: 2, borderRadius: 4 },
+  tabButton: {
+    flex: 1,
+    padding: '10px 20px',
+    cursor: 'pointer',
+    border: '1px solid #ccc',
+    borderBottom: 'none',
+    backgroundColor: '#f1f1f1',
+    fontWeight: 'bold',
+    marginRight: 2,
+    borderRadius: 4
+  },
   activeTab: { backgroundColor: '#2196F3', color: '#fff' },
-  tabContent: { border: '1px solid #ccc', padding: 20, borderRadius: 4, backgroundColor: '#fff' },
+  tabContent: {
+    border: '1px solid #ccc',
+    padding: 20,
+    borderRadius: 4,
+    backgroundColor: '#fff'
+  },
   table: { width: '100%', borderCollapse: 'collapse', marginTop: 10 },
   th: { backgroundColor: '#2196F3', color: '#fff', padding: 8, textAlign: 'left' },
   td: { padding: 8, borderBottom: '1px solid #ddd' }
