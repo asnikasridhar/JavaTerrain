@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const ExpController = require('../controllers/expenditureController');
+const expenditureController = require('../controllers/expenditureController');
 
-router.post('/add-expenditure', ExpController.addExpenditure);
-router.get('/expenditures', ExpController.getAllExpenditures);
-router.get('/expenditures/:id', ExpController.getExpenditureById);
-router.get('/expendituredetails-by-prop/:property_id/:days', ExpController.getExpenditureByProperty);
-router.put('/update-expenditure/:id', ExpController.updateExpenditure);
-router.delete('/delete-expenditure/:id', ExpController.deleteExpenditure);
+// Routes
+router.post('/add-expenditure', expenditureController.addExpenditure);
+router.get('/expendituredetails', expenditureController.getExpenditures);
+router.get('/expendituredetails/:id', expenditureController.getExpenditureById);
+router.get('/expendituredetails-by-prop/:property_id/:days', expenditureController.getExpendituresByPropertyId);
+router.put('/update-expenditure/:expenditure_id', expenditureController.updateExpenditure);
+router.delete('/delete-expenditure/:expenditure_id', expenditureController.deleteExpenditure);
 
 module.exports = router;

@@ -2,10 +2,12 @@ const db = require('../config/db');
 
 exports.createLabor = async (labor) => {
   const { user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by } = labor;
+  console.log( user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by )
+  
   const [result] = await db.execute(
     `INSERT INTO Labors (user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, created_by]
+    [user_id, name, age, adhar_card, bank_details, health_history, photo, address, emergency_details, created_on, 'sys']
   );
   return result;
 };

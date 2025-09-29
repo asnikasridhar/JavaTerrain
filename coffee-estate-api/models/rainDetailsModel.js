@@ -7,7 +7,7 @@ exports.createRainDetail = async (data) => {
   const [result] = await db.execute(
     `INSERT INTO RainDetails (date_time, rain_amount, block_id, created_on, created_by)
      VALUES (?, ?, ?, ?, ?)`,
-    [date_time, rain_amount, block_id, created_on, created_by]
+    [date_time, rain_amount, block_id, created_on, 'sys']
   );
   return result;
 };

@@ -1,65 +1,69 @@
-const ExpModel = require('../models/expenditureModel');
+const Expenditure = require('../models/expenditureModel');
 
+// Create Expenditure
 exports.addExpenditure = async (req, res) => {
   try {
-    const created_on = new Date();
-    await ExpModel.createExpenditure({ ...req.body, created_on });
-    res.send('Expenditure added successfully.');
+    const result = await Expenditure.createExpenditure(req.body);
+    res.status(201).json({ message: 'Expenditure details added successfully.', result });
   } catch (err) {
-    res.status(500).send('Error adding expenditure.');
+    console.error('Error adding expenditure:', err);
+    res.status(500).json({ error: 'Failed to add expenditure' });
   }
 };
 
-exports.getAllExpenditures = async (req, res) => {
+// Get All Expenditures
+exports.getExpenditures = async (req, res) => {
   try {
-    const expenses = await ExpModel.getAllExpenditures();
-    res.json(expenses);
+    const results = await Expenditure.getAllExpenditures();
+    res.json(results);
   } catch (err) {
-    res.status(500).send('Error fetching expenditures.');
+    console.error('Error fetching expenditures:', err);
+    res.status(500).json({ error: 'Failed to fetch expenditures' });
   }
 };
 
+// Get Expenditure by ID
 exports.getExpenditureById = async (req, res) => {
   try {
-    const exp = await ExpModel.getExpenditureById(req.params.id);
-    if (!exp) return res.status(404).send('Expenditure not found.');
-    res.json(exp);
+    const result = await Expenditure.getExpenditureById(req.params.id);
+    if (!result) return res.status(404).json({ error: 'Expenditure not found' });
+    res.json(result);
   } catch (err) {
-    res.status(500).send('Error fetching expenditure.');
+    console.error('Error fetching expenditure by ID:', err);
+    res.status(500).json({ error: 'Failed to fetch expenditure' });
   }
 };
 
-exports.getExpenditureByProperty = async (req, res) => {
+// Get Expenditures by PropertyId and Days
+exports.getExpendituresByPropertyId = async (req, res) => {
   try {
-    const propertyId = req.params.property_id;
-    const days = parseInt(req.params.days, 10);
-
-    const data = await ExpModel.getExpenditureByProperty(propertyId, days);
-
-    res.json(data);
+    const { property_id, days } = req.params;
+    const results = await Expenditure.getExpendituresByPropertyId(property_id, parseInt(days, 10));
+    res.json(results);
   } catch (err) {
-    console.error('Error fetching expenditure details:', err);
-    res.status(500).send('Error fetching expenditure details.');
+    console.error('Error fetching expenditures by property:', err);
+    res.status(500).json({ error: 'Failed to fetch expenditures' });
   }
 };
 
+// Update Expenditure
 exports.updateExpenditure = async (req, res) => {
   try {
-    const modified_on = new Date();
-    const result = await ExpModel.updateExpenditure(req.params.id, { ...req.body, modified_on });
-    if (result.affectedRows === 0) return res.status(404).send('Expenditure not found.');
-    res.send('Expenditure updated successfully.');
+    await Expenditure.updateExpenditure(req.params.expenditure_id, req.body);
+    res.json({ message: 'Expenditure updated successfully.' });
   } catch (err) {
-    res.status(500).send('Error updating expenditure.');
+    console.error('Error updating expenditure:', err);
+    res.status(500).json({ error: 'Failed to update expenditure' });
   }
 };
 
+// Delete Expenditure
 exports.deleteExpenditure = async (req, res) => {
   try {
-    const result = await ExpModel.deleteExpenditure(req.params.id);
-    if (result.affectedRows === 0) return res.status(404).send('Expenditure not found.');
-    res.send('Expenditure deleted successfully.');
+    await Expenditure.deleteExpenditure(req.params.expenditure_id);
+    res.json({ message: 'Expenditure deleted successfully.' });
   } catch (err) {
-    res.status(500).send('Error deleting expenditure.');
+    console.error('Error deleting expenditure:', err);
+    res.status(500).json({ error: 'Failed to delete expenditure' });
   }
 };
