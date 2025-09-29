@@ -20,7 +20,7 @@ const EditAcre = () => {
 
   useEffect(() => {
     // Fetch the existing acre details
-    axios.get(`http://localhost:3000/acredetails/${id}`)
+    axios.get(`http://localhost:3000/api/acredetails/${id}`)
       .then(response => {
         setAcreDetail(response.data);
         setLoading(false);
@@ -41,7 +41,7 @@ const EditAcre = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/update-acre/${id}`, acreDetail)
+    axios.put(`http://localhost:3000/api/update-acre/${id}`, acreDetail)
       .then(() => {
         navigate('/view-acredetails'); // Redirect to the view page after successful update
       })

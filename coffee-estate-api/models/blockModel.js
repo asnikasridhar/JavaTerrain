@@ -3,7 +3,7 @@ const db = require('../config/db');
 exports.createBlock = async (block) => {
   const { block_name, property_id, created_on, created_by } = block;
   const [result] = await db.execute(
-    `INSERT INTO block (block_name, property_id, created_on, created_by)
+    `INSERT INTO blocks (block_name, property_id, created_on, created_by)
      VALUES (?, ?, ?, ?)`,
     [block_name, property_id, created_on, created_by]
   );
@@ -13,7 +13,7 @@ exports.createBlock = async (block) => {
 exports.getAllBlocks = async () => {
   const [rows] = await db.execute(
     `SELECT b.*, p.property_name 
-     FROM block b
+     FROM blocks b
      INNER JOIN property p ON b.property_id = p.property_id`
   );
   return rows;
@@ -22,7 +22,7 @@ exports.getAllBlocks = async () => {
 exports.getBlockById = async (id) => {
   const [rows] = await db.execute(
     `SELECT b.*, p.property_name 
-     FROM block b
+     FROM blocks b
      INNER JOIN property p ON b.property_id = p.property_id
      WHERE b.block_id = ?`,
     [id]
@@ -32,7 +32,7 @@ exports.getBlockById = async (id) => {
 
 exports.getBlocksByPropertyId = async (propertyId) => {
   const [rows] = await db.execute(
-    `SELECT * FROM block WHERE property_id = ?`,
+    `SELECT * FROM blocks WHERE property_id = ?`,
     [propertyId]
   );
   return rows;
@@ -41,7 +41,7 @@ exports.getBlocksByPropertyId = async (propertyId) => {
 exports.updateBlock = async (id, data) => {
   const { block_name, property_id, modified_on, modified_by } = data;
   const [result] = await db.execute(
-    `UPDATE block
+    `UPDATE blocks
      SET block_name = ?, property_id = ?, modified_on = ?, modified_by = ?
      WHERE block_id = ?`,
     [block_name, property_id, modified_on, modified_by, id]
@@ -51,7 +51,7 @@ exports.updateBlock = async (id, data) => {
 
 exports.deleteBlock = async (id) => {
   const [result] = await db.execute(
-    `DELETE FROM block WHERE block_id = ?`,
+    `DELETE FROM blocks WHERE block_id = ?`,
     [id]
   );
   return result;

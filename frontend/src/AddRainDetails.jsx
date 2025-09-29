@@ -15,7 +15,7 @@ function AddRainDetails() {
   // Fetch blocks based on the selected property_id
   useEffect(() => {
     if (propertyId) {
-      axios.get(`http://localhost:3000/blocks-by-prop/${propertyId}`)
+      axios.get(`http://localhost:3000/api/blocks-by-prop/${propertyId}`)
         .then(response => {
           setBlocks(response.data); // Set the list of blocks
         })
@@ -35,7 +35,7 @@ function AddRainDetails() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-rain', rainData)
+    axios.post('http://localhost:3000/api/add-rain', rainData)
       .then(response => {
         alert('Rain details added successfully!');
       })

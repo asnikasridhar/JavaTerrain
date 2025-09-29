@@ -19,7 +19,7 @@ function AddPlantDetails() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-plantdetail', plantData)
+    axios.post('http://localhost:3000/api/add-plantdetail', plantData)
       .then(response => {
         alert('Plant details added successfully!');
       })

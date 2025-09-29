@@ -19,10 +19,10 @@ exports.getAllProperties = async (req, res) => {
   }
 };
 
-exports.getPropertyById = async (req, res) => {
+exports.getPropertyByUserId = async (req, res) => {
   try {
     const id = req.params.id;
-    const property = await Property.getPropertyById(id);
+    const property = await Property.getPropertyByUserId(id);
     if (!property) {
       return res.status(404).json({ message: 'Property not found' });
     }

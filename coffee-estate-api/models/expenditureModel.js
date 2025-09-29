@@ -27,6 +27,16 @@ exports.getExpenditureById = async (id) => {
   return rows.length > 0 ? rows[0] : null;
 };
 
+exports.getExpenditureByProperty = async (propertyId, days) => {
+  const [rows] = await db.execute(
+    `SELECT * FROM Expenditure 
+     WHERE property_id = ? 
+     AND edate >= DATE_SUB(CURDATE(), INTERVAL ? DAY)`,
+    [propertyId, days]
+  );
+  return rows;
+};
+
 exports.updateExpenditure = async (id, data) => {
   const { item, amount, block_id, modified_on, modified_by } = data;
   const [result] = await db.execute(

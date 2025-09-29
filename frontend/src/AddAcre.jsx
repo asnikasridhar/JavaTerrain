@@ -22,7 +22,7 @@ function AddAcre() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-acre', acreData)
+    axios.post('http://localhost:3000/api/add-acre', acreData)
       .then(response => {
         alert('Acre added successfully!');
       })

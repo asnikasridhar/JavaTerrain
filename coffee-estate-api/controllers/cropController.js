@@ -29,6 +29,17 @@ exports.getCropById = async (req, res) => {
   }
 };
 
+exports.getByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.propertyId;
+    const crops = await CropModel.getByPropertyId(propertyId);
+    res.json(crops);
+  } catch (err) {
+    console.error('Error fetching crop details:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+};
+
 exports.updateCrop = async (req, res) => {
   try {
     const modified_on = new Date();

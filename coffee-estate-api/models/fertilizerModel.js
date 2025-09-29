@@ -27,6 +27,8 @@ exports.getFertilizerById = async (id) => {
   return rows.length > 0 ? rows[0] : null;
 };
 
+
+
 exports.getFertilizersByPropertyAndDays = async (propertyId, days) => {
   const [rows] = await db.execute(
     `SELECT fertilizer_id, fertilizer_name, date_of_application, property_id, created_on, created_by, modified_on, modified_by, other_details 

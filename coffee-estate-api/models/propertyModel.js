@@ -15,12 +15,15 @@ exports.getAllProperties = async () => {
   return rows;
 };
 
-exports.getPropertyById = async (id) => {
+exports.getPropertyByUserId = async (id) => {
   const [rows] = await db.execute(
-    `SELECT * FROM property WHERE property_id = ?`,
+    ` SELECT p.property_id, p.property_name, p.total_acre, p.address_1, p.address_2, p.pincode, p.created_on, p.created_by, p.modified_on, p.modified_by
+    FROM Property p
+    JOIN Propertyuser pu ON p.property_id = pu.property_id
+    WHERE pu.user_id = ?`,
     [id]
   );
-  return rows.length > 0 ? rows[0] : null;
+  return rows;
 };
 
 exports.updateProperty = async (id, data) => {

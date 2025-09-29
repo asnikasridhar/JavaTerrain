@@ -10,7 +10,7 @@ const ViewUserDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:3000/users')
+    axios.get('http://localhost:3000/api/users')
       .then(response => {
         setUserDetails(response.data);
       })
@@ -21,7 +21,7 @@ const ViewUserDetails = () => {
   }, []);
 
   const handleDelete = (userId) => {
-    axios.delete(`http://localhost:3000/users/${userId}`)
+    axios.delete(`http://localhost:3000/api/users/${userId}`)
       .then(() => {
         setUserDetails(userDetails.filter(user => user.user_id !== userId));
       })

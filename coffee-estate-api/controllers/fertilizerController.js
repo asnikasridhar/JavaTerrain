@@ -32,7 +32,7 @@ exports.getFertilizer = async (req, res) => {
 exports.getFertilizersByProperty = async (req, res) => {
   try {
     const { property_id, days } = req.params;
-    const fertilizers = await Fertilizer.getByPropertyAndDays(property_id, days);
+    const fertilizers = await Fertilizer.getFertilizersByPropertyAndDays(property_id, days);
     res.json(fertilizers);
   } catch {
     res.status(500).json({ error: 'Error fetching fertilizers by property' });

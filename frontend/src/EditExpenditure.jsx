@@ -21,7 +21,7 @@ const EditExpenditure = () => {
 
   useEffect(() => {
     // Fetch the existing expenditure details
-    axios.get(`http://localhost:3000/expendituredetails/${id}`)
+    axios.get(`http://localhost:3000/api/expendituredetails/${id}`)
       .then(response => {
         setExpenditureDetail(response.data);
         setLoading(false);
@@ -42,7 +42,7 @@ const EditExpenditure = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/update-expenditure/${id}`, expenditureDetail)
+    axios.put(`http://localhost:3000/api/update-expenditure/${id}`, expenditureDetail)
       .then(() => {
         navigate('/view-expendituredetails'); // Redirect to the view page after successful update
       })

@@ -22,7 +22,7 @@ function AddLabor() {
   // Fetch users based on selected property
   useEffect(() => {
     if (selectedProperty) {
-      axios.get(`http://localhost:3000/users-by-property-id/${selectedProperty}`)
+      axios.get(`http://localhost:3000/api/users-by-property-id/${selectedProperty}`)
         .then(response => {
           setUsers(response.data); // Set the list of users
         })
@@ -48,7 +48,7 @@ function AddLabor() {
       property_id: selectedProperty // Include property_id in the data sent to the backend
     };
 
-    axios.post('http://localhost:3000/add-labor', finalLaborData)
+    axios.post('http://localhost:3000/api/add-labor', finalLaborData)
       .then(response => {
         alert('Labor added successfully!');
       })

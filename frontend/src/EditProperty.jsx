@@ -20,7 +20,7 @@ const EditProperty = () => {
   useEffect(() => {
     console.log(id);
     // Fetch the existing property details
-    axios.get(`http://localhost:3000/propertydetails/${id}`)
+    axios.get(`http://localhost:3000/api/propertydetails/${id}`)
       .then(response => {
         setPropertyDetails(response.data);
         setLoading(false);
@@ -41,7 +41,7 @@ const EditProperty = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/update-property/${id}`, propertyDetails)
+    axios.put(`http://localhost:3000/api/update-property/${id}`, propertyDetails)
       .then(() => {
         navigate('/view-property'); // Redirect to the view page after successful update
       })

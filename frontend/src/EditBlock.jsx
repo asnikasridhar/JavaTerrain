@@ -17,7 +17,7 @@ const EditBlock = () => {
 
   useEffect(() => {
     // Fetch the existing block details
-    axios.get(`http://localhost:3000/blockdetails/${id}`)
+    axios.get(`http://localhost:3000/api/blockdetails/${id}`)
       .then(response => {
         setBlockDetail(response.data);
         setLoading(false);
@@ -38,7 +38,7 @@ const EditBlock = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:3000/updateblock/${id}`, blockDetail)
+    axios.put(`http://localhost:3000/api/updateblock/${id}`, blockDetail)
       .then(() => {
         navigate('/view-blocks'); // Redirect to the view page after successful update
       })

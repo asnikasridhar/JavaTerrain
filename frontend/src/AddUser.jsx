@@ -20,7 +20,7 @@ function AddUser() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/add-user', userData)
+    axios.post('http://localhost:3000/api/add-user', userData)
       .then(response => {
         alert('User added successfully!');
       })

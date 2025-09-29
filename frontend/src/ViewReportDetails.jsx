@@ -18,7 +18,7 @@ const ViewReportDetails = () => {
   const [reportDetails, setReportDetails] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/reportdetails')
+    axios.get('http://localhost:3000/api/reportdetails')
       .then(response => {
         setReportDetails(response.data);
       })

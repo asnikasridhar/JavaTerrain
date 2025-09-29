@@ -29,6 +29,20 @@ exports.getExpenditureById = async (req, res) => {
   }
 };
 
+exports.getExpenditureByProperty = async (req, res) => {
+  try {
+    const propertyId = req.params.property_id;
+    const days = parseInt(req.params.days, 10);
+
+    const data = await ExpModel.getExpenditureByProperty(propertyId, days);
+
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching expenditure details:', err);
+    res.status(500).send('Error fetching expenditure details.');
+  }
+};
+
 exports.updateExpenditure = async (req, res) => {
   try {
     const modified_on = new Date();

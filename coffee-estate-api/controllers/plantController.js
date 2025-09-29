@@ -29,6 +29,22 @@ exports.getPlantById = async (req, res) => {
   }
 };
 
+exports.getPlantsByProperty = async (req, res) => {
+  try {
+    const propertyId = parseInt(req.params.property_id, 10);
+
+    if (isNaN(propertyId)) {
+      return res.status(400).json({ error: 'Invalid property_id' });
+    }
+
+    const plants = await PlantModel.getPlantsByProperty(propertyId);
+    res.json(plants);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error getting plant details' });
+  }
+};
+
 exports.updatePlant = async (req, res) => {
   try {
     const modified_on = new Date();

@@ -9,7 +9,7 @@ const Income = () => {
   const selProperty = JSON.parse(localStorage.getItem('selProperty'));
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/cropdetails-by-prop/${selProperty}`)
+    axios.get(`http://localhost:3000/api/cropdetails-by-prop/${selProperty}`)
       .then(response => {
         const data = response.data;
 

@@ -27,6 +27,19 @@ exports.getPlantById = async (id) => {
   return rows.length > 0 ? rows[0] : null;
 };
 
+exports.getPlantsByProperty = async (propertyId) => {
+  const query = `
+    SELECT p.plant_id, p.plant_type, p.details, b.block_name, p.block_id
+    FROM plantdetails p
+    INNER JOIN blocks b ON p.block_id = b.block_id
+    INNER JOIN property pp ON pp.property_id = b.property_id
+    WHERE b.property_id = ?
+  `;
+  const [rows] = await db.execute(query, [propertyId]);
+  
+  return rows;
+};
+
 exports.updatePlant = async (id, data) => {
   const { plant_name, species, modified_on, modified_by } = data;
   const [result] = await db.execute(
