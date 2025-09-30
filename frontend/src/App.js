@@ -39,6 +39,7 @@ import ViewBlock from './ViewBlock';
 import Login  from './Login';
 import Income from './Income';
 import RainReport from './RainReport';
+import Attendance from './Attendance';
 // import other components
 
 function App() {
@@ -75,6 +76,8 @@ function App() {
                     <Dropdown.Item as={Link} to="/add-reports">Add Reports</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-property">Add Property</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/add-block">Add Block</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/add-attendance">Add Attendance</Dropdown.Item>
+
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -110,6 +113,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/add-attendance" element={<Attendance />} />
           <Route path="/add-acre" element={<AddAcre />} />
           <Route path="/view-acredetails" element={<ViewAcreDetails />} />
             <Route path="/edit-acre/:id" element={<EditAcre />} />

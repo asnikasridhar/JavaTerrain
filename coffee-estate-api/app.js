@@ -16,7 +16,7 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const blockRoutes = require('./routes/blockRoutes');
 const plantDetailRoutes = require('./routes/plantDetailRoutes');
 const cropDetailRoutes = require('./routes/cropDetailRoutes');
-
+const attendanceRoutes = require('./routes/attendanceRoutes');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -37,6 +37,7 @@ app.use('/api',propertyRoutes);
 app.use('/api', blockRoutes);
 app.use('/api', plantDetailRoutes);
 app.use('/api', cropDetailRoutes);
+app.use('/api', attendanceRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
