@@ -177,38 +177,37 @@ INSERT INTO `cropdetails` VALUES (1,20000,11000,1,NULL,NULL,NULL,NULL,NULL),(2,2
 UNLOCK TABLES;
 
 --
--- Table structure for table `expenditure`
+-- Table structure for table `currentasset`
 --
 
-DROP TABLE IF EXISTS `expenditure`;
+DROP TABLE IF EXISTS `currentasset`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `expenditure` (
-  `expenditure_id` int NOT NULL AUTO_INCREMENT,
-  `water` float DEFAULT NULL,
-  `fertilizer` float DEFAULT NULL,
-  `pruning` float DEFAULT NULL,
-  `others` float DEFAULT NULL,
-  `edate` datetime DEFAULT NULL,
-  `property_id` int DEFAULT NULL,
-  `created_on` datetime DEFAULT NULL,
-  `created_by` varchar(200) DEFAULT NULL,
-  `modified_on` datetime DEFAULT NULL,
-  `fuel` float DEFAULT NULL,
-  PRIMARY KEY (`expenditure_id`),
-  KEY `expenditure_ibfb_2_idx` (`property_id`),
-  CONSTRAINT `expenditure_ibfb_2` FOREIGN KEY (`property_id`) REFERENCES `property` (`property_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `currentasset` (
+  `currentasset_id` int NOT NULL AUTO_INCREMENT,
+  `asset_name` varchar(150) NOT NULL,
+  `asset_price` float NOT NULL,
+  `procured_year` year DEFAULT NULL,
+  `isactive` tinyint(1) DEFAULT '1',
+  `property_id` int NOT NULL,
+  `asset_procured_source` varchar(150) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(100) DEFAULT NULL,
+  `modified_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`currentasset_id`),
+  KEY `fk_currentasset_property` (`property_id`),
+  CONSTRAINT `fk_currentasset_property` FOREIGN KEY (`property_id`) REFERENCES `property` (`property_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `expenditure`
+-- Dumping data for table `currentasset`
 --
 
-LOCK TABLES `expenditure` WRITE;
-/*!40000 ALTER TABLE `expenditure` DISABLE KEYS */;
-INSERT INTO `expenditure` VALUES (1,2000,23030,3332220,313131,'2024-08-31 00:00:00',1,NULL,NULL,NULL,1001),(3,99,7,77,99,NULL,NULL,NULL,NULL,NULL,NULL),(4,99,9,98,88,NULL,NULL,NULL,NULL,NULL,NULL),(5,991,9,98,88,NULL,NULL,NULL,NULL,NULL,NULL),(6,88,99,77,99,'2024-08-30 23:29:00',1,NULL,NULL,NULL,2122),(7,88,77,6666,98,'2024-09-11 10:29:00',1,NULL,NULL,NULL,NULL),(8,200,200,200,200,'2025-09-29 15:01:00',1,'2025-09-30 00:04:42','sys',NULL,0);
-/*!40000 ALTER TABLE `expenditure` ENABLE KEYS */;
+LOCK TABLES `currentasset` WRITE;
+/*!40000 ALTER TABLE `currentasset` DISABLE KEYS */;
+/*!40000 ALTER TABLE `currentasset` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -571,6 +570,41 @@ INSERT INTO `reports` VALUES (1,222222,888889000,25,NULL,NULL,NULL,NULL,NULL),(2
 UNLOCK TABLES;
 
 --
+-- Table structure for table `running_expenses`
+--
+
+DROP TABLE IF EXISTS `running_expenses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `running_expenses` (
+  `expense_id` int NOT NULL AUTO_INCREMENT,
+  `expensetype_id` int NOT NULL,
+  `property_id` int NOT NULL,
+  `expense_code` varchar(50) DEFAULT NULL,
+  `expense_occurence_date` date NOT NULL,
+  `other_expense` float DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(100) DEFAULT NULL,
+  `modified_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`expense_id`),
+  KEY `fk_running_expenses_expensetype` (`expensetype_id`),
+  KEY `fk_running_expenses_property` (`property_id`),
+  CONSTRAINT `fk_running_expenses_expensetype` FOREIGN KEY (`expensetype_id`) REFERENCES `expensetype` (`expensetype_id`),
+  CONSTRAINT `fk_running_expenses_property` FOREIGN KEY (`property_id`) REFERENCES `property` (`property_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `running_expenses`
+--
+
+LOCK TABLES `running_expenses` WRITE;
+/*!40000 ALTER TABLE `running_expenses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `running_expenses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -653,7 +687,7 @@ CREATE TABLE `wage` (
   UNIQUE KEY `wage_fix_code` (`wage_fix_code`),
   KEY `fk_wage_labor` (`labor_id`),
   CONSTRAINT `fk_wage_labor` FOREIGN KEY (`labor_id`) REFERENCES `labors` (`labor_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -662,6 +696,7 @@ CREATE TABLE `wage` (
 
 LOCK TABLES `wage` WRITE;
 /*!40000 ALTER TABLE `wage` DISABLE KEYS */;
+INSERT INTO `wage` VALUES (1,100.00,100.00,'WG_LABNAME_25',50.00,1,'2025-10-13 04:52:18','sys',NULL,NULL),(2,150.00,100.00,'WG_LABNAME2_25',50.00,2,'2025-10-13 04:53:31','sys',NULL,NULL);
 /*!40000 ALTER TABLE `wage` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -728,6 +763,46 @@ CREATE TABLE `wagepicking` (
 LOCK TABLES `wagepicking` WRITE;
 /*!40000 ALTER TABLE `wagepicking` DISABLE KEYS */;
 /*!40000 ALTER TABLE `wagepicking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wageyield`
+--
+
+DROP TABLE IF EXISTS `wageyield`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wageyield` (
+  `wageyield_id` int NOT NULL AUTO_INCREMENT,
+  `wage_id` int NOT NULL,
+  `yieldtype_id` int NOT NULL,
+  `baseunit_id` int NOT NULL,
+  `plant_id` int DEFAULT NULL,
+  `wageyield_date` date NOT NULL,
+  `quantity` float NOT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(100) DEFAULT NULL,
+  `modified_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`wageyield_id`),
+  KEY `fk_wageyield_wage` (`wage_id`),
+  KEY `fk_wageyield_yieldtype` (`yieldtype_id`),
+  KEY `fk_wageyield_baseunit` (`baseunit_id`),
+  KEY `fk_wageyield_plantdetails` (`plant_id`),
+  CONSTRAINT `fk_wageyield_baseunit` FOREIGN KEY (`baseunit_id`) REFERENCES `baseunit` (`baseunit_id`),
+  CONSTRAINT `fk_wageyield_plantdetails` FOREIGN KEY (`plant_id`) REFERENCES `plantdetails` (`plant_id`),
+  CONSTRAINT `fk_wageyield_wage` FOREIGN KEY (`wage_id`) REFERENCES `wage` (`wage_id`),
+  CONSTRAINT `fk_wageyield_yieldtype` FOREIGN KEY (`yieldtype_id`) REFERENCES `yieldtype` (`yieldtype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wageyield`
+--
+
+LOCK TABLES `wageyield` WRITE;
+/*!40000 ALTER TABLE `wageyield` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wageyield` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -841,4 +916,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-11 19:47:59
+-- Dump completed on 2025-10-13  5:44:16
